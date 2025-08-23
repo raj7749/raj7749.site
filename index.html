@@ -1,95 +1,457 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home | Welcome</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #0f172a;
-      color: #e2e8f0;
-      line-height: 1.6;
-    }
-
-    header {
-      background-color: #1e293b;
-      padding: 1.5rem 2rem;
-      text-align: center;
-      border-bottom: 2px solid #334155;
-    }
-
-    header h1 {
-      font-size: 2rem;
-      color: #38bdf8;
-    }
-
-    main {
-      padding: 2rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    section {
-      margin-bottom: 2rem;
-    }
-
-    h2 {
-      color: #facc15;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      color: #cbd5e1;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      border-top: 1px solid #334155;
-      color: #94a3b8;
-      font-size: 0.9rem;
-    }
-
-    a {
-      color: #38bdf8;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI: Comprehensive Predictions and Human Impact Analysis (2025-2050)</title>
+    <meta name="description" content="Expert analysis and yearly forecasts on AI development, human impact, and transformative changes from 2025-2050">
+    <meta name="keywords" content="AI predictions, artificial intelligence, future technology, human impact analysis, AGI, automation">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Welcome to My Digital Space</h1>
-  </header>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">AI Future Report</div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="#hero" class="nav-link">Overview</a></li>
+                <li class="nav-item"><a href="#timeline" class="nav-link">Timeline</a></li>
+                <li class="nav-item"><a href="#impact" class="nav-link">Impact Analysis</a></li>
+                <li class="nav-item"><a href="#scenarios" class="nav-link">Scenarios</a></li>
+                <li class="nav-item"><a href="#recommendations" class="nav-link">Recommendations</a></li>
+                <li class="nav-item"><a href="#conclusion" class="nav-link">Conclusion</a></li>
+            </ul>
+        </div>
+    </nav>
 
-  <main>
-    <section>
-      <h2>About This Site</h2>
-      <p>This is a minimalist personal homepage designed for privacy and simplicity. No names, no trackers — just a clean presence online. Stay tuned for future updates and projects.</p>
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="glass-header">
+                    <h1 class="hero-title">The Future of AI</h1>
+                    <div class="hero-subtitle-group">
+                        <p class="hero-subtitle">Comprehensive Predictions and Human Impact Analysis</p>
+                        <p class="hero-period">(2025-2050)</p>
+                        <div class="hero-byline">
+                            <span class="byline-label">Research & Analysis by</span>
+                            <span class="byline-author">Rajesh Devraj Yadav</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-stats glass-panel">
+                    <div class="stat-item">
+                        <span class="stat-number">25</span>
+                        <span class="stat-label">Years Analyzed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">8</span>
+                        <span class="stat-label">Key Milestones</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Alternative Scenarios</span>
+                    </div>
+                </div>
+                
+                <div class="key-findings glass-panel">
+                    <h3>Executive Summary</h3>
+                    <ul class="findings-list">
+                        <li>AI will achieve human-level performance in narrow domains by 2030</li>
+                        <li>By 2045, traditional employment structures will be completely transformed</li>
+                        <li>2050 may mark the arrival of Artificial General Intelligence (AGI)</li>
+                        <li>Progressive human impact ranges from unprecedented opportunity to existential challenges</li>
+                    </ul>
+                </div>
+                
+                <a href="#timeline" class="cta-button glass-button">Explore the Timeline</a>
+            </div>
+        </div>
     </section>
 
-    <section>
-      <h2>Tech & Thoughts</h2>
-      <p>Expect content on open-source tools, system architecture, spiritual philosophy, and life experiences. This space is under development — updates will follow.</p>
+    <!-- Timeline Section -->
+    <section id="timeline" class="timeline-section">
+        <div class="container">
+            <h2 class="section-title">AI Evolution Timeline</h2>
+            <div class="timeline-nav glass-panel">
+                <button class="timeline-btn glass-button active" data-year="2026">2026</button>
+                <button class="timeline-btn glass-button" data-year="2028">2028</button>
+                <button class="timeline-btn glass-button" data-year="2030">2030</button>
+                <button class="timeline-btn glass-button" data-year="2032">2032</button>
+                <button class="timeline-btn glass-button" data-year="2035">2035</button>
+                <button class="timeline-btn glass-button" data-year="2040">2040</button>
+                <button class="timeline-btn glass-button" data-year="2045">2045</button>
+                <button class="timeline-btn glass-button" data-year="2050">2050</button>
+            </div>
+            <div class="timeline-content glass-panel">
+                <div class="timeline-item active" data-year="2026">
+                    <h3 class="timeline-title">2026: The Integration Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>Frontier and small-footprint models gain sharper reasoning and task specialization</li>
+                                <li>Generative AI adoption in business jumps from 55% to 75%</li>
+                                <li>AI-driven protein simulation and science accelerators move from lab to cloud</li>
+                                <li>One billion autonomous AI agents active worldwide</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Software teams treat LLMs like standard libraries—versioned, tested, and swapped per use-case</li>
+                                <li>Domain-tuned copilots (coding, legal, finance) become ubiquitous SaaS add-ons</li>
+                                <li>Early-stage AI agents start chaining tasks (ticket triage → code patch → pull-request)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2028">
+                    <h3 class="timeline-title">2028: The Disruption Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>Agentic AI embedded in 33% of enterprise software</li>
+                                <li>AI solves 80% of customer service issues</li>
+                                <li>AI guides employee behavior in 40% of companies</li>
+                                <li>Boards of 10% of companies consult AI for strategic choices</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Human-in-the-loop shifts to AI-in-the-loop: people supervise exceptions, not day-to-day ops</li>
+                                <li>Compliance teams formalize audit trails for AI decisions</li>
+                                <li>Consumer devices ship with offline copilots; enterprise laptops encrypt weights at rest</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2030">
+                    <h3 class="timeline-title">2030: The Transformation Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>Generative AI becomes default content engine across industries</li>
+                                <li>AI central to climate-tech optimization (grid balancing, materials R&D)</li>
+                                <li>Human-level performance appears in narrow domains (proto-AGI)</li>
+                                <li>End-to-end software design from prompt to deployment</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Creative pipelines blur: writers outline, AI storyboards, humans direct</li>
+                                <li>Real-time hyper-personalization standard in banking, retail, telehealth</li>
+                                <li>Medical AIs draft full treatment plans, second-checked by clinicians</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2032">
+                    <h3 class="timeline-title">2032: The Restructuring Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>AI market size reaches $2.74 trillion</li>
+                                <li>52% of jobs have core tasks automated or augmented</li>
+                                <li>Rapid growth in AI chip market to support demand</li>
+                                <li>AI data centers become more sustainable and energy efficient</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Routine paperwork, basic analytics, and first-line support are agent-driven</li>
+                                <li>Workers focus on exception handling, oversight, and creative strategy</li>
+                                <li>Reskilling at unprecedented scale becomes necessary</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2035">
+                    <h3 class="timeline-title">2035: The Maturation Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>AI becomes invisible infrastructure like Wi-Fi today</li>
+                                <li>AI chips market reaches ~$473 billion</li>
+                                <li>Mature LLMs handle niche vertical logic</li>
+                                <li>Carbon-neutral data centers become the norm</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Every business decision runs through an optimization layer</li>
+                                <li>End-to-end supply-chain orchestration runs autonomously</li>
+                                <li>AI risk officers sit on executive staff</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2040">
+                    <h3 class="timeline-title">2040: The Ambient Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>85% of households use AI-driven IoT systems</li>
+                                <li>50% chance of achieving high-level machine intelligence (proto-AGI)</li>
+                                <li>AI agents routinely handle policy analytics and public-service workflows</li>
+                                <li>Most homes, vehicles, and city systems run on embedded AI</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Ambient AI anticipates intent—lights, transport, health monitors adjust without prompts</li>
+                                <li>Routine jobs largely shift to AI assistance; lifelong up-skilling becomes standard</li>
+                                <li>Universal Basic Income pilots expand as displacement grows</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2045">
+                    <h3 class="timeline-title">2045: The Post-Human Work Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>Autonomous research, design, and strategic planning mature</li>
+                                <li>Professional services rely on human-AI teams</li>
+                                <li>Global AI-governance bodies coordinate ethics and safety</li>
+                                <li>Societies measure value beyond traditional employment</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Elite workforce oversees vast AI systems; most focus on creative, caregiving, or civic roles</li>
+                                <li>Explainability audits become mandatory for high-impact models</li>
+                                <li>New economic models emerge based on human creativity and care</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2050">
+                    <h3 class="timeline-title">2050: The Transcendence Phase</h3>
+                    <div class="timeline-details">
+                        <div class="detail-group">
+                            <h4>Technology Milestones</h4>
+                            <ul>
+                                <li>Strong likelihood of AGI or super-human collective intelligence systems</li>
+                                <li>AI-driven breakthroughs accelerate climate tech, medicine, and materials science</li>
+                                <li>Human–AI interaction feels natural and immersive</li>
+                                <li>Neural interfaces and AR/VR become mainstream</li>
+                            </ul>
+                        </div>
+                        <div class="detail-group">
+                            <h4>Market Impact</h4>
+                            <ul>
+                                <li>Decision-making defaults to AI co-counsel at personal and corporate levels</li>
+                                <li>Population-scale health and education programs adapt in real time</li>
+                                <li>Ethics and safety curricula become core from primary school onward</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
-  </main>
 
-  <footer>
-    &copy; <span id="year"></span> DigitalSoul. All rights reserved.
-  </footer>
+    <!-- Impact Analysis Section -->
+    <section id="impact" class="impact-section">
+        <div class="container">
+            <h2 class="section-title">Impact Analysis</h2>
+            <div class="impact-tabs glass-panel">
+                <button class="tab-btn glass-button active" data-tab="positive">Positive Impacts</button>
+                <button class="tab-btn glass-button" data-tab="negative">Negative Impacts</button>
+            </div>
+            <div class="impact-content">
+                <div class="impact-tab-content active" data-tab="positive">
+                    <div class="impact-grid" id="positiveImpacts"></div>
+                </div>
+                <div class="impact-tab-content" data-tab="negative">
+                    <div class="impact-grid" id="negativeImpacts"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+    <!-- Alternative Scenarios Section -->
+    <section id="scenarios" class="scenarios-section">
+        <div class="container">
+            <h2 class="section-title">Alternative Scenarios</h2>
+            <div class="scenarios-grid">
+                <div class="scenario-card glass-panel">
+                    <h3>Regulation-First Path</h3>
+                    <p class="scenario-trigger">Major AI misuse incident triggers global regulatory response</p>
+                    <p class="scenario-timeline">Timeline: 2027-2030</p>
+                    <p class="scenario-impact">Aggressive global AI laws slow open-source development. Innovation concentrates among large, compliant corporations. Safety improves but progress slows significantly.</p>
+                </div>
+                <div class="scenario-card glass-panel">
+                    <h3>Hardware Bottleneck</h3>
+                    <p class="scenario-trigger">Prolonged chip shortage or energy crisis</p>
+                    <p class="scenario-timeline">Timeline: 2028-2032</p>
+                    <p class="scenario-impact">Focus shifts from scaling to algorithmic efficiency. Neuromorphic computing and quantum systems accelerate. AI development becomes more sustainable but slower.</p>
+                </div>
+                <div class="scenario-card glass-panel">
+                    <h3>Alignment Breakthrough</h3>
+                    <p class="scenario-trigger">Major breakthrough in AI interpretability and safety</p>
+                    <p class="scenario-timeline">Timeline: 2029-2031</p>
+                    <p class="scenario-impact">Higher autonomy systems deployed safely earlier than expected. Public trust in AI increases dramatically. Accelerated adoption across all sectors.</p>
+                </div>
+                <div class="scenario-card glass-panel">
+                    <h3>Geopolitical Fragmentation</h3>
+                    <p class="scenario-trigger">AI becomes central to national security competition</p>
+                    <p class="scenario-timeline">Timeline: 2026-2030</p>
+                    <p class="scenario-impact">Global AI ecosystem splits along geopolitical lines. Different safety and ethical standards emerge. Technology transfer restrictions limit global progress.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommendations Section -->
+    <section id="recommendations" class="recommendations-section">
+        <div class="container">
+            <h2 class="section-title">Strategic Recommendations</h2>
+            <div class="recommendations-grid">
+                <div class="recommendation-category glass-panel">
+                    <h3>For Individuals</h3>
+                    <div class="recommendation-group">
+                        <h4>Immediate Actions</h4>
+                        <ul>
+                            <li>Integrate lightweight domain-specific LLMs into current workflows</li>
+                            <li>Develop prompt-engineering and AI-tool proficiency</li>
+                            <li>Begin versioning prompts and model weights as development artifacts</li>
+                            <li>Focus on uniquely human skills: emotional intelligence, creative synthesis, ethical reasoning</li>
+                        </ul>
+                    </div>
+                    <div class="recommendation-group">
+                        <h4>Medium-term Strategy</h4>
+                        <ul>
+                            <li>Transition to human-AI collaborative work models</li>
+                            <li>Develop expertise in AI governance and ethics frameworks</li>
+                            <li>Build skills in AI system oversight and exception handling</li>
+                            <li>Cultivate roles that require human judgment and creativity</li>
+                        </ul>
+                    </div>
+                    <div class="recommendation-group">
+                        <h4>Long-term Vision</h4>
+                        <ul>
+                            <li>Focus on purely human domains: philosophy, art, interpersonal relationships</li>
+                            <li>Develop expertise in AI alignment and safety</li>
+                            <li>Prepare for post-work society participation</li>
+                            <li>Maintain physical and mental capabilities independent of AI assistance</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="recommendation-category glass-panel">
+                    <h3>For Organizations</h3>
+                    <div class="recommendation-group">
+                        <h4>Immediate Actions</h4>
+                        <ul>
+                            <li>Pilot task-oriented agents in non-production environments</li>
+                            <li>Extend monitoring systems with AI-specific metrics (latency, token usage, drift)</li>
+                            <li>Develop AI governance frameworks and audit trails</li>
+                            <li>Train workforce on AI collaboration rather than replacement</li>
+                        </ul>
+                    </div>
+                    <div class="recommendation-group">
+                        <h4>Strategic Planning</h4>
+                        <ul>
+                            <li>Plan for workforce transformation rather than reduction</li>
+                            <li>Invest in explainable AI and safety systems</li>
+                            <li>Develop competitive advantages in human-AI collaboration</li>
+                            <li>Prepare for regulatory compliance in AI governance</li>
+                        </ul>
+                    </div>
+                    <div class="recommendation-group">
+                        <h4>Long-term Vision</h4>
+                        <ul>
+                            <li>Build resilient systems that can function with or without AI</li>
+                            <li>Develop expertise in uniquely human value creation</li>
+                            <li>Prepare for post-scarcity economic models</li>
+                            <li>Maintain human agency in critical decision-making</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section id="conclusion" class="conclusion-section">
+        <div class="container">
+            <h2 class="section-title">Key Takeaways</h2>
+            <div class="conclusion-content">
+                <div class="key-insight glass-panel">
+                    <h3>The Path Forward</h3>
+                    <p>The next 25 years will reshape humanity's relationship with intelligence itself. Success depends not on resisting this transformation, but on thoughtfully navigating it while preserving what makes us fundamentally human.</p>
+                </div>
+                <div class="action-grid">
+                    <div class="action-item glass-panel">
+                        <h4>Start Now</h4>
+                        <p>Begin integrating AI tools into your workflow while developing uniquely human capabilities.</p>
+                    </div>
+                    <div class="action-item glass-panel">
+                        <h4>Stay Adaptive</h4>
+                        <p>Prepare for continuous learning and adaptation as AI capabilities evolve rapidly.</p>
+                    </div>
+                    <div class="action-item glass-panel">
+                        <h4>Think Long-term</h4>
+                        <p>Consider the societal implications and help shape a future that benefits all of humanity.</p>
+                    </div>
+                </div>
+                <div class="cta-section">
+                    <a href="#hero" class="cta-button glass-button secondary">Return to Top</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass-panel">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Report Metadata</h4>
+                    <div class="report-info">
+                        <p class="report-title">The Future of AI: Comprehensive Predictions and Human Impact Analysis (2025-2050)</p>
+                        <div class="report-details">
+                            <span class="detail-item">Expert Analysis and Yearly Forecasts</span>
+                            <span class="detail-separator">•</span>
+                            <span class="detail-item">Research by Rajesh Devraj Yadav</span>
+                            <span class="detail-separator">•</span>
+                            <span class="detail-item">Published 2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Methodology</h4>
+                    <p>Based on expert analysis, current research trends, and technological development patterns with comprehensive scenario modeling.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AI Future Report. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
 </body>
 </html>
