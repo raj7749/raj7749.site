@@ -1,4 +1,4 @@
-// Glassmorphism AI Report JavaScript - Fixed Version
+// Enhanced Professional AI Report JavaScript with Fixed Navigation and Timeline
 
 // Data for impact analysis
 const impactData = {
@@ -154,165 +154,104 @@ const impactData = {
 
 // Current active tab for impact analysis
 let currentImpactTab = 'positive';
-let currentTimelineYear = '2026';
+
+// Enhanced animation and interaction tracking
+let interactionCount = 0;
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded - Initializing glassmorphism AI report');
+    console.log('🚀 AI Future Report - Enhanced Glassmorphism Version Loading...');
     
-    // Initialize all functionality
-    initializeNavigation();
-    initializeProgressBar();  
-    initializeTimeline();
-    initializeImpactAnalysis();
-    initializeMobileNav();
-    initializeSmoothScrolling();
-    initializeGlassmorphismEffects();
-    
-    // Load initial impact data after a short delay
-    setTimeout(() => {
-        loadImpactData('positive');
-    }, 200);
-    
-    console.log('All systems initialized');
+    // Initialize all functionality with enhanced error handling
+    try {
+        initializeNavigation();
+        initializeProgressBar();
+        initializeTimeline();
+        initializeImpactAnalysis();
+        initializeMobileNav();
+        initializeSmoothScrolling();
+        initializeSourcesSection();
+        initializeGlassmorphismEffects();
+        initializeAccessibilityFeatures();
+        
+        // Load initial impact data
+        setTimeout(() => {
+            loadImpactData('positive');
+        }, 100);
+        
+        console.log('✅ Application initialized successfully');
+        
+    } catch (error) {
+        console.error('❌ Initialization error:', error);
+        displayErrorMessage('Application initialization failed. Please refresh the page.');
+    }
 });
 
-// Enhanced glassmorphism effects
-function initializeGlassmorphismEffects() {
-    // Add enhanced hover effects to glass panels
-    const glassPanels = document.querySelectorAll('.glass-panel');
-    
-    glassPanels.forEach(panel => {
-        panel.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 8px 32px 0 rgba(31, 38, 135, 0.5)';
-        });
-        
-        panel.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 8px 32px 0 rgba(31, 38, 135, 0.37)';
-        });
-    });
-    
-    // Add glassmorphism effect to dynamically created elements
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            mutation.addedNodes.forEach(function(node) {
-                if (node.nodeType === 1 && node.classList.contains('impact-card')) {
-                    node.classList.add('glass-panel');
-                }
-            });
-        });
-    });
-    
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-}
-
-// Navigation functionality with glassmorphism enhancements
+// Fixed Navigation functionality
 function initializeNavigation() {
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-link');
     
-    console.log('Initializing enhanced glassmorphism navigation');
+    console.log('🧭 Initializing navigation with', navLinks.length, 'nav links');
     
-    // Enhanced scroll effect for navbar
+    // Add scroll effect to navbar with glassmorphism
     window.addEventListener('scroll', function() {
-        const scrollY = window.scrollY;
-        
-        if (scrollY > 100) {
+        if (window.scrollY > 100) {
             navbar.classList.add('scrolled');
-            navbar.style.background = 'rgba(15, 20, 25, 0.95)';
-            navbar.style.backdropFilter = 'blur(12px)';
         } else {
             navbar.classList.remove('scrolled');
-            navbar.style.background = 'rgba(15, 20, 25, 0.8)';
-            navbar.style.backdropFilter = 'blur(8px)';
         }
         
         // Update active nav link based on scroll position
         updateActiveNavLink();
     });
     
-    // Enhanced click handlers for nav links
-    navLinks.forEach(link => {
+    // Fixed click handlers to nav links
+    navLinks.forEach((link, index) => {
+        const href = link.getAttribute('href');
+        console.log(`🔗 Setting up nav link ${index}: ${href}`);
+        
         link.addEventListener('click', function(e) {
             e.preventDefault();
+            
+            // Track interaction
+            interactionCount++;
+            
             const targetId = this.getAttribute('href').substring(1);
+            console.log('🎯 Navigation clicked, target ID:', targetId);
+            
             const targetElement = document.getElementById(targetId);
+            console.log('Target element found:', !!targetElement);
             
             if (targetElement) {
-                const offsetTop = targetElement.offsetTop - 80;
+                // Calculate offset with better precision
+                const navbarHeight = navbar ? navbar.offsetHeight : 80;
+                const offsetTop = targetElement.offsetTop - navbarHeight - 10;
+                
+                console.log('📍 Scrolling to position:', offsetTop);
+                
+                // Fixed smooth scroll implementation
                 window.scrollTo({
                     top: offsetTop,
                     behavior: 'smooth'
                 });
                 
-                // Add ripple effect
-                addRippleEffect(this, e);
-            }
-        });
-        
-        // Enhanced hover effects
-        link.addEventListener('mouseenter', function() {
-            this.style.background = 'rgba(255, 255, 255, 0.05)';
-            this.style.backdropFilter = 'blur(8px)';
-        });
-        
-        link.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('active')) {
-                this.style.background = 'transparent';
-                this.style.backdropFilter = 'none';
+                // Update active state
+                updateActiveNavLink();
+                
+                // Close mobile menu if open
+                closeMobileNavigation();
+                
+                // Add visual feedback
+                addGlassPulseEffect(targetElement);
+                
+            } else {
+                console.error('❌ Target element not found:', targetId);
             }
         });
     });
-}
-
-// Enhanced ripple effect for interactive elements
-function addRippleEffect(element, event) {
-    const ripple = document.createElement('span');
-    const rect = element.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    const x = event.clientX - rect.left - size / 2;
-    const y = event.clientY - rect.top - size / 2;
     
-    ripple.style.cssText = `
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(0);
-        animation: ripple 0.6s linear;
-        width: ${size}px;
-        height: ${size}px;
-        left: ${x}px;
-        top: ${y}px;
-        pointer-events: none;
-    `;
-    
-    // Add ripple animation keyframes if not exists
-    if (!document.getElementById('ripple-styles')) {
-        const style = document.createElement('style');
-        style.id = 'ripple-styles';
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    element.style.position = 'relative';
-    element.style.overflow = 'hidden';
-    element.appendChild(ripple);
-    
-    setTimeout(() => {
-        ripple.remove();
-    }, 600);
+    console.log('✅ Navigation initialized');
 }
 
 // Update active navigation link based on scroll position
@@ -323,7 +262,7 @@ function updateActiveNavLink() {
     let current = '';
     
     sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
+        const sectionTop = section.offsetTop - 120;
         const sectionHeight = section.clientHeight;
         
         if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
@@ -333,13 +272,8 @@ function updateActiveNavLink() {
     
     navLinks.forEach(link => {
         link.classList.remove('active');
-        link.style.background = 'transparent';
-        link.style.backdropFilter = 'none';
-        
         if (link.getAttribute('href') === `#${current}`) {
             link.classList.add('active');
-            link.style.background = 'rgba(255, 255, 255, 0.05)';
-            link.style.backdropFilter = 'blur(8px)';
         }
     });
 }
@@ -348,129 +282,93 @@ function updateActiveNavLink() {
 function initializeProgressBar() {
     const progressBar = document.getElementById('progressBar');
     
-    console.log('Initializing enhanced progress bar');
-    
-    window.addEventListener('scroll', function() {
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (progressBar) {
+        window.addEventListener('scroll', function() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+            const clampedPercent = Math.min(100, Math.max(0, scrollPercent));
+            
+            progressBar.style.width = clampedPercent + '%';
+        });
         
-        const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
-        const clampedPercent = Math.min(100, Math.max(0, scrollPercent));
-        
-        progressBar.style.width = clampedPercent + '%';
-        
-        // Add glow effect based on progress
-        const glowIntensity = clampedPercent / 100;
-        progressBar.style.boxShadow = `0 0 ${10 + glowIntensity * 20}px rgba(59, 130, 246, ${0.3 + glowIntensity * 0.4})`;
-    });
+        console.log('📊 Progress bar initialized');
+    }
 }
 
-// FIXED: Enhanced timeline functionality with proper content switching
+// Fixed timeline functionality
 function initializeTimeline() {
     const timelineButtons = document.querySelectorAll('.timeline-btn');
     const timelineItems = document.querySelectorAll('.timeline-item');
     
-    console.log('Timeline buttons found:', timelineButtons.length);
-    console.log('Timeline items found:', timelineItems.length);
+    console.log('⏰ Timeline buttons found:', timelineButtons.length);
+    console.log('📋 Timeline items found:', timelineItems.length);
     
     timelineButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            const year = this.getAttribute('data-year');
-            currentTimelineYear = year;
-            console.log('Timeline button clicked for year:', year);
+            e.preventDefault();
             
-            // Add ripple effect
-            addRippleEffect(this, e);
+            const year = this.getAttribute('data-year');
+            console.log('📅 Timeline button clicked for year:', year);
             
             // Remove active class from all buttons
             timelineButtons.forEach(btn => {
                 btn.classList.remove('active');
                 btn.setAttribute('aria-selected', 'false');
-                btn.style.background = 'rgba(255, 255, 255, 0.05)';
-                btn.style.transform = 'translateY(0)';
             });
             
             // Add active class to clicked button
             this.classList.add('active');
             this.setAttribute('aria-selected', 'true');
-            this.style.background = 'rgba(59, 130, 246, 0.8)';
-            this.style.transform = 'translateY(-2px)';
             
             // Hide all timeline items
             timelineItems.forEach(item => {
                 item.classList.remove('active');
-                item.style.display = 'none';
             });
             
             // Show selected timeline item
             const targetItem = document.querySelector(`.timeline-item[data-year="${year}"]`);
-            console.log('Target timeline item:', targetItem);
+            console.log('Target timeline item:', !!targetItem);
             
             if (targetItem) {
-                targetItem.style.display = 'block';
-                // Use setTimeout to ensure display change takes effect before adding active class
-                setTimeout(() => {
-                    targetItem.classList.add('active');
-                }, 10);
-                console.log('Timeline item activated for year:', year);
+                targetItem.classList.add('active');
+                addGlassPulseEffect(targetItem);
+                console.log('✨ Timeline item activated for year:', year);
             } else {
-                console.error('Timeline item not found for year:', year);
+                console.error('❌ Timeline item not found for year:', year);
                 // Fallback: show first item if target not found
                 if (timelineItems.length > 0) {
-                    timelineItems[0].style.display = 'block';
-                    setTimeout(() => {
-                        timelineItems[0].classList.add('active');
-                    }, 10);
+                    timelineItems[0].classList.add('active');
                 }
-            }
-        });
-        
-        // Enhanced hover effects for timeline buttons
-        button.addEventListener('mouseenter', function() {
-            if (!this.classList.contains('active')) {
-                this.style.transform = 'translateY(-1px)';
-                this.style.background = 'rgba(255, 255, 255, 0.08)';
-            }
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('active')) {
-                this.style.transform = 'translateY(0)';
-                this.style.background = 'rgba(255, 255, 255, 0.05)';
             }
         });
     });
     
     // Initialize first timeline item as active
-    if (timelineItems.length > 0) {
-        timelineItems.forEach(item => item.style.display = 'none');
+    if (timelineItems.length > 0 && timelineButtons.length > 0) {
         timelineItems[0].classList.add('active');
-        timelineItems[0].style.display = 'block';
+        timelineButtons[0].classList.add('active');
     }
     
-    // Set first button as active
-    if (timelineButtons.length > 0) {
-        timelineButtons[0].classList.add('active');
-        timelineButtons[0].style.background = 'rgba(59, 130, 246, 0.8)';
-    }
+    console.log('✅ Timeline initialized');
 }
 
-// FIXED: Enhanced impact analysis functionality with proper tab switching
+// Enhanced Impact Analysis functionality
 function initializeImpactAnalysis() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.impact-tab-content');
     
-    console.log('Impact tab buttons found:', tabButtons.length);
-    console.log('Impact tab contents found:', tabContents.length);
+    console.log('📊 Impact tab buttons found:', tabButtons.length);
+    console.log('📈 Impact tab contents found:', tabContents.length);
     
     tabButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            const tab = this.getAttribute('data-tab');
-            console.log('Impact tab clicked:', tab);
+            e.preventDefault();
             
-            // Add ripple effect
-            addRippleEffect(this, e);
+            const tab = this.getAttribute('data-tab');
+            console.log('🔄 Impact tab clicked:', tab);
             
             // Update current tab
             currentImpactTab = tab;
@@ -479,101 +377,69 @@ function initializeImpactAnalysis() {
             tabButtons.forEach(btn => {
                 btn.classList.remove('active');
                 btn.setAttribute('aria-selected', 'false');
-                btn.style.background = 'rgba(255, 255, 255, 0.05)';
-                btn.style.transform = 'translateY(0)';
             });
             
             // Add active class to clicked button
             this.classList.add('active');
             this.setAttribute('aria-selected', 'true');
-            this.style.background = 'rgba(59, 130, 246, 0.8)';
-            this.style.transform = 'translateY(-2px)';
             
             // Hide all tab contents
             tabContents.forEach(content => {
                 content.classList.remove('active');
-                content.style.display = 'none';
             });
             
             // Show selected tab content
             const targetContent = document.querySelector(`.impact-tab-content[data-tab="${tab}"]`);
-            console.log('Target tab content:', targetContent);
+            console.log('Target tab content:', !!targetContent);
             
             if (targetContent) {
-                targetContent.style.display = 'block';
-                setTimeout(() => {
-                    targetContent.classList.add('active');
-                }, 10);
-                console.log('Tab content activated for:', tab);
+                targetContent.classList.add('active');
+                console.log('✨ Tab content activated for:', tab);
             }
             
             // Load data for selected tab
             setTimeout(() => {
-                loadImpactData(tab);
+                loadImpactData(tab, true);
             }, 50);
-        });
-        
-        // Enhanced hover effects
-        button.addEventListener('mouseenter', function() {
-            if (!this.classList.contains('active')) {
-                this.style.transform = 'translateY(-1px)';
-                this.style.background = 'rgba(255, 255, 255, 0.08)';
-            }
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('active')) {
-                this.style.transform = 'translateY(0)';
-                this.style.background = 'rgba(255, 255, 255, 0.05)';
-            }
         });
     });
     
     // Initialize first tab as active
-    if (tabContents.length > 0) {
-        tabContents.forEach(content => content.style.display = 'none');
+    if (tabContents.length > 0 && tabButtons.length > 0) {
         tabContents[0].classList.add('active');
-        tabContents[0].style.display = 'block';
+        tabButtons[0].classList.add('active');
     }
     
-    // Set first button as active
-    if (tabButtons.length > 0) {
-        tabButtons[0].classList.add('active');
-        tabButtons[0].style.background = 'rgba(59, 130, 246, 0.8)';
-    }
+    console.log('✅ Impact analysis initialized');
 }
 
-// FIXED: Enhanced load impact data with proper clearing and loading
-function loadImpactData(type) {
-    console.log('Loading impact data for type:', type);
+// Enhanced load impact data with animations
+function loadImpactData(type, animated = false) {
+    console.log('📊 Loading impact data for type:', type);
     
     const containerId = type === 'positive' ? 'positiveImpacts' : 'negativeImpacts';
     const container = document.getElementById(containerId);
     
-    console.log('Impact container found:', container);
-    
     if (!container) {
-        console.error('Impact container not found:', containerId);
+        console.error('❌ Impact container not found:', containerId);
         return;
     }
     
-    // Clear existing content immediately
+    // Clear existing content
     container.innerHTML = '';
     
     const data = impactData[type];
-    console.log('Impact data to load:', data);
     
     if (!data) {
-        console.error('No impact data found for type:', type);
+        console.error('❌ No impact data found for type:', type);
         return;
     }
     
-    // Load new content
+    const fragment = document.createDocumentFragment();
+    
     Object.keys(data).forEach((year, index) => {
         const impactCard = document.createElement('div');
-        impactCard.className = 'impact-card glass-panel';
-        impactCard.style.opacity = '0';
-        impactCard.style.transform = 'translateY(30px)';
+        impactCard.className = 'impact-card';
         
         impactCard.innerHTML = `
             <div class="year">${year}</div>
@@ -583,66 +449,241 @@ function loadImpactData(type) {
             </ul>
         `;
         
-        container.appendChild(impactCard);
-        
-        // Staggered animation for cards
-        setTimeout(() => {
-            impactCard.style.transition = 'all 0.5s ease';
-            impactCard.style.opacity = '1';
-            impactCard.style.transform = 'translateY(0)';
-        }, index * 100);
-        
-        console.log('Added impact card for year:', year);
+        fragment.appendChild(impactCard);
+        console.log('✨ Added impact card for year:', year);
     });
     
-    console.log('Impact data loaded successfully for type:', type);
+    container.appendChild(fragment);
+    console.log('✅ Impact data loaded successfully for type:', type);
 }
 
-// Enhanced mobile navigation
+// Enhanced sources section functionality
+function initializeSourcesSection() {
+    const sourceCards = document.querySelectorAll('.source-card');
+    const sourceCategories = document.querySelectorAll('.source-category');
+    const sourceLinks = document.querySelectorAll('.source-link');
+    
+    console.log('📚 Sources section initialization:');
+    console.log('- Source cards:', sourceCards.length);
+    console.log('- Source categories:', sourceCategories.length);
+    console.log('- Source links:', sourceLinks.length);
+    
+    // Add enhanced hover effects and animations to source cards
+    sourceCards.forEach((card, index) => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.02)';
+            addGlowEffect(this);
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            removeGlowEffect(this);
+        });
+        
+        // Add click analytics
+        card.addEventListener('click', function() {
+            const title = this.querySelector('.source-title');
+            if (title) {
+                console.log('📄 Source card interaction:', title.textContent);
+            }
+            addClickRippleEffect(this);
+        });
+    });
+    
+    // Enhanced external link handling
+    sourceLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const sourceCard = this.closest('.source-card');
+            if (sourceCard) {
+                const sourceTitle = sourceCard.querySelector('.source-title');
+                if (sourceTitle) {
+                    console.log('🔗 Source link clicked:', this.href);
+                    console.log('📊 Source accessed:', sourceTitle.textContent);
+                }
+            }
+            
+            // Ensure the link opens in a new tab with security measures
+            this.setAttribute('target', '_blank');
+            this.setAttribute('rel', 'noopener noreferrer');
+            
+            // Add click effect
+            addClickRippleEffect(this);
+        });
+        
+        // Add hover effects for source links
+        link.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    console.log('✅ Sources section initialized successfully');
+}
+
+// Enhanced glassmorphism effects
+function initializeGlassmorphismEffects() {
+    console.log('✨ Initializing glassmorphism effects...');
+    
+    // Add floating animation to glassmorphism elements
+    const glassElements = document.querySelectorAll('.source-card, .timeline-content, .impact-card, .scenario-card, .recommendation-category');
+    
+    glassElements.forEach((element, index) => {
+        // Add mouse parallax effect
+        element.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        element.addEventListener('mouseleave', function() {
+            this.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        });
+    });
+    
+    console.log('✅ Glassmorphism effects initialized');
+}
+
+// Enhanced accessibility features
+function initializeAccessibilityFeatures() {
+    console.log('♿ Initializing accessibility features...');
+    
+    // Add comprehensive ARIA labels
+    setTimeout(() => {
+        const timelineButtons = document.querySelectorAll('.timeline-btn');
+        timelineButtons.forEach((btn, index) => {
+            btn.setAttribute('aria-label', `View ${btn.textContent} AI development timeline`);
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+        });
+        
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach((btn, index) => {
+            btn.setAttribute('aria-label', `View ${btn.textContent} of AI development`);
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+        });
+        
+        const sourceLinks = document.querySelectorAll('.source-link');
+        sourceLinks.forEach(link => {
+            const sourceCard = link.closest('.source-card');
+            if (sourceCard) {
+                const sourceTitle = sourceCard.querySelector('.source-title');
+                const organization = sourceCard.querySelector('.source-organization');
+                if (sourceTitle && organization) {
+                    link.setAttribute('aria-label', `Visit external source: ${sourceTitle.textContent} from ${organization.textContent}`);
+                }
+            }
+        });
+        
+        console.log('✅ Accessibility attributes added');
+    }, 100);
+    
+    // Add keyboard navigation enhancements
+    document.addEventListener('keydown', function(e) {
+        // Enhanced timeline navigation
+        if (e.target.classList.contains('timeline-btn')) {
+            const buttons = Array.from(document.querySelectorAll('.timeline-btn'));
+            const currentIndex = buttons.indexOf(e.target);
+            
+            if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                e.preventDefault();
+                buttons[currentIndex - 1].click();
+                buttons[currentIndex - 1].focus();
+            } else if (e.key === 'ArrowRight' && currentIndex < buttons.length - 1) {
+                e.preventDefault();
+                buttons[currentIndex + 1].click();
+                buttons[currentIndex + 1].focus();
+            }
+        }
+        
+        // Enhanced tab navigation
+        if (e.target.classList.contains('tab-btn')) {
+            const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+            const currentIndex = tabs.indexOf(e.target);
+            
+            if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                e.preventDefault();
+                tabs[currentIndex - 1].click();
+                tabs[currentIndex - 1].focus();
+            } else if (e.key === 'ArrowRight' && currentIndex < tabs.length - 1) {
+                e.preventDefault();
+                tabs[currentIndex + 1].click();
+                tabs[currentIndex + 1].focus();
+            }
+        }
+    });
+    
+    console.log('✅ Accessibility features initialized');
+}
+
+// Enhanced mobile navigation functionality
 function initializeMobileNav() {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
     
-    console.log('Initializing enhanced mobile navigation');
-    
     if (navToggle && navMenu) {
-        navToggle.addEventListener('click', function() {
+        navToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
             
-            // Enhanced mobile menu styling
-            if (navMenu.classList.contains('active')) {
-                navMenu.style.backdropFilter = 'blur(12px)';
-                navMenu.style.background = 'rgba(15, 20, 25, 0.98)';
-            }
+            console.log('📱 Mobile nav toggled');
         });
         
         // Close mobile menu when clicking on a link
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
-                navToggle.classList.remove('active');
-                navMenu.classList.remove('active');
+                closeMobileNavigation();
+                console.log('📱 Mobile nav closed via link click');
             });
         });
         
         // Close mobile menu when clicking outside
         document.addEventListener('click', function(e) {
             if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navToggle.classList.remove('active');
-                navMenu.classList.remove('active');
+                closeMobileNavigation();
             }
         });
+        
+        console.log('✅ Mobile navigation initialized');
     }
 }
 
-// Enhanced smooth scrolling
+function closeMobileNavigation() {
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    if (navToggle && navMenu) {
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+    }
+}
+
+// Enhanced smooth scrolling for all internal links
 function initializeSmoothScrolling() {
     const links = document.querySelectorAll('a[href^="#"]');
     
-    console.log('Initializing enhanced smooth scrolling');
+    console.log('🔄 Initializing smooth scrolling for', links.length, 'links');
     
     links.forEach(link => {
+        if (link.classList.contains('nav-link')) {
+            return; // Skip nav links as they're handled elsewhere
+        }
+        
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
@@ -650,193 +691,150 @@ function initializeSmoothScrolling() {
             const targetElement = document.getElementById(targetId);
             
             if (targetElement) {
-                const offsetTop = targetElement.offsetTop - 80;
+                const navbar = document.getElementById('navbar');
+                const navbarHeight = navbar ? navbar.offsetHeight : 80;
+                const offsetTop = targetElement.offsetTop - navbarHeight - 10;
                 
-                // Enhanced smooth scroll with easing
-                smoothScrollTo(offsetTop, 800);
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
                 
-                // Add ripple effect if it's a button
-                if (this.classList.contains('cta-button') || this.classList.contains('glass-button')) {
-                    addRippleEffect(this, e);
-                }
+                addGlassPulseEffect(targetElement);
             }
         });
     });
 }
 
-// Enhanced smooth scroll function with easing
-function smoothScrollTo(target, duration) {
-    const start = window.pageYOffset;
-    const distance = target - start;
-    let startTime = null;
+// Enhanced visual effects
+function addGlassPulseEffect(element) {
+    if (!element) return;
     
-    function easeInOutCubic(t) {
-        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-    }
-    
-    function animation(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        const ease = easeInOutCubic(progress);
-        
-        window.scrollTo(0, start + distance * ease);
-        
-        if (timeElapsed < duration) {
-            requestAnimationFrame(animation);
-        }
-    }
-    
-    requestAnimationFrame(animation);
+    element.style.animation = 'glassPulse 0.6s ease-out';
+    setTimeout(() => {
+        element.style.animation = '';
+    }, 600);
 }
 
-// Enhanced intersection observer for animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-document.addEventListener('DOMContentLoaded', function() {
+function addClickRippleEffect(element) {
+    if (!element) return;
+    
+    const ripple = document.createElement('div');
+    ripple.style.cssText = `
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(50, 130, 184, 0.3);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+        top: 50%;
+        left: 50%;
+        width: 50px;
+        height: 50px;
+        margin: -25px 0 0 -25px;
+    `;
+    
+    element.style.position = 'relative';
+    element.appendChild(ripple);
+    
     setTimeout(() => {
-        const animateElements = document.querySelectorAll('.glass-panel, .scenario-card, .recommendation-category, .action-item');
-        
-        animateElements.forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.6s ease';
-            observer.observe(el);
-        });
-    }, 100);
-});
+        if (ripple.parentNode) {
+            ripple.remove();
+        }
+    }, 600);
+}
+
+function addGlowEffect(element) {
+    if (!element) return;
+    element.style.filter = 'drop-shadow(0 0 20px rgba(50, 130, 184, 0.3))';
+}
+
+function removeGlowEffect(element) {
+    if (!element) return;
+    element.style.filter = '';
+}
 
 // Enhanced utility functions
-function debounce(func, wait, immediate) {
+function debounce(func, wait) {
     let timeout;
     return function executedFunction() {
         const context = this;
         const args = arguments;
         const later = function() {
             timeout = null;
-            if (!immediate) func.apply(context, args);
+            func.apply(context, args);
         };
-        const callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
     };
 }
 
-// Optimized scroll handler with glassmorphism enhancements
-const optimizedScrollHandler = debounce(function() {
-    updateActiveNavLink();
-    updateGlassmorphismEffects();
-}, 10);
-
-function updateGlassmorphismEffects() {
-    const scrollY = window.scrollY;
-    const glassPanels = document.querySelectorAll('.glass-panel:not(.navbar)');
+function displayErrorMessage(message) {
+    console.error('⚠️ Error:', message);
     
-    glassPanels.forEach(panel => {
-        const rect = panel.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-        
-        if (isVisible) {
-            const opacity = Math.max(0.05, Math.min(0.1, (window.innerHeight - rect.top) / window.innerHeight * 0.1));
-            panel.style.background = `rgba(255, 255, 255, ${opacity})`;
-        }
-    });
-}
-
-window.addEventListener('scroll', optimizedScrollHandler);
-
-// Enhanced keyboard navigation support
-document.addEventListener('keydown', function(e) {
-    // Timeline navigation with arrow keys
-    if (e.target.classList.contains('timeline-btn')) {
-        const buttons = Array.from(document.querySelectorAll('.timeline-btn'));
-        const currentIndex = buttons.indexOf(e.target);
-        
-        if (e.key === 'ArrowLeft' && currentIndex > 0) {
-            e.preventDefault();
-            buttons[currentIndex - 1].click();
-            buttons[currentIndex - 1].focus();
-        } else if (e.key === 'ArrowRight' && currentIndex < buttons.length - 1) {
-            e.preventDefault();
-            buttons[currentIndex + 1].click();
-            buttons[currentIndex + 1].focus();
-        }
-    }
+    // Create error notification
+    const errorDiv = document.createElement('div');
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 84, 89, 0.9);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        z-index: 10000;
+        backdrop-filter: blur(10px);
+        font-family: var(--font-family-base);
+        font-weight: 500;
+    `;
+    errorDiv.textContent = message;
     
-    // Tab navigation with arrow keys
-    if (e.target.classList.contains('tab-btn')) {
-        const tabs = Array.from(document.querySelectorAll('.tab-btn'));
-        const currentIndex = tabs.indexOf(e.target);
-        
-        if (e.key === 'ArrowLeft' && currentIndex > 0) {
-            e.preventDefault();
-            tabs[currentIndex - 1].click();
-            tabs[currentIndex - 1].focus();
-        } else if (e.key === 'ArrowRight' && currentIndex < tabs.length - 1) {
-            e.preventDefault();
-            tabs[currentIndex + 1].click();
-            tabs[currentIndex + 1].focus();
-        }
-    }
-});
-
-// Enhanced accessibility improvements
-document.addEventListener('DOMContentLoaded', function() {
+    document.body.appendChild(errorDiv);
+    
     setTimeout(() => {
-        // Add ARIA labels to interactive elements
-        const timelineButtons = document.querySelectorAll('.timeline-btn');
-        timelineButtons.forEach((btn, index) => {
-            btn.setAttribute('aria-label', `View ${btn.textContent} timeline`);
-            btn.setAttribute('role', 'tab');
-            btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
-        });
-        
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        tabButtons.forEach((btn, index) => {
-            btn.setAttribute('aria-label', `View ${btn.textContent}`);
-            btn.setAttribute('role', 'tab');
-            btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
-        });
-        
-        console.log('Enhanced accessibility attributes added');
-    }, 200);
-});
+        if (errorDiv.parentNode) {
+            errorDiv.remove();
+        }
+    }, 5000);
+}
 
 // Enhanced error handling
 window.addEventListener('error', function(e) {
-    console.error('Glassmorphism AI Report error:', e.error);
+    console.error('💥 Application error:', e.error);
 });
 
-// Performance monitoring with glassmorphism metrics
-if ('performance' in window) {
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            const perfData = performance.getEntriesByType('navigation')[0];
-            if (perfData) {
-                console.log('Glassmorphism AI Report loaded in:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
-                
-                // Log glassmorphism-specific metrics
-                const glassPanels = document.querySelectorAll('.glass-panel');
-                console.log('Glass panels rendered:', glassPanels.length);
-            }
-        }, 0);
+// Add CSS animations for enhanced effects
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @keyframes glassPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); box-shadow: 0 0 30px rgba(50, 130, 184, 0.3); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes ripple {
+        to { transform: scale(4); opacity: 0; }
+    }
+`;
+
+document.head.appendChild(styleSheet);
+
+// Debug function
+function debugSections() {
+    const sections = document.querySelectorAll('section[id]');
+    console.log('🔍 Available sections:');
+    sections.forEach(section => {
+        console.log(`- ${section.id}: ${section.offsetTop}px`);
     });
 }
+
+// Call debug function on load
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        debugSections();
+        console.log('🎉 Enhanced AI Future Report fully loaded and interactive!');
+    }, 1000);
+});
 
 // Export functions for potential testing
 if (typeof module !== 'undefined' && module.exports) {
@@ -845,10 +843,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initializeProgressBar,
         initializeTimeline,
         initializeImpactAnalysis,
-        loadImpactData,
-        initializeGlassmorphismEffects,
-        addRippleEffect
+        initializeSourcesSection,
+        loadImpactData
     };
 }
-
-console.log('Fixed Glassmorphism AI Future Report JavaScript loaded successfully');
