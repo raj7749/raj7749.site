@@ -1,4 +1,4 @@
-// Enhanced Professional AI Report JavaScript with Fixed Navigation and Timeline
+// Enhanced Professional AI Report JavaScript with Fixed Functionality
 
 // Data for impact analysis
 const impactData = {
@@ -160,34 +160,37 @@ let interactionCount = 0;
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 AI Future Report - Enhanced Glassmorphism Version Loading...');
+    console.log('🚀 AI Future Report - Enhanced Glassmorphism Version with New Sections Loading...');
     
-    // Initialize all functionality with enhanced error handling
-    try {
-        initializeNavigation();
-        initializeProgressBar();
-        initializeTimeline();
-        initializeImpactAnalysis();
-        initializeMobileNav();
-        initializeSmoothScrolling();
-        initializeSourcesSection();
-        initializeGlassmorphismEffects();
-        initializeAccessibilityFeatures();
-        
-        // Load initial impact data
-        setTimeout(() => {
-            loadImpactData('positive');
-        }, 100);
-        
-        console.log('✅ Application initialized successfully');
-        
-    } catch (error) {
-        console.error('❌ Initialization error:', error);
-        displayErrorMessage('Application initialization failed. Please refresh the page.');
-    }
+    // Wait for DOM to be fully ready
+    setTimeout(() => {
+        try {
+            initializeNavigation();
+            initializeProgressBar();
+            initializeTimeline();
+            initializeImpactAnalysis();
+            initializeMobileNav();
+            initializeSmoothScrolling();
+            initializeSourcesSection();
+            initializeNewSections();
+            initializeGlassmorphismEffects();
+            initializeAccessibilityFeatures();
+            
+            // Load initial impact data
+            setTimeout(() => {
+                loadImpactData('positive');
+            }, 200);
+            
+            console.log('✅ Application initialized successfully with new sections');
+            
+        } catch (error) {
+            console.error('❌ Initialization error:', error);
+            displayErrorMessage('Application initialization failed. Please refresh the page.');
+        }
+    }, 100);
 });
 
-// Fixed Navigation functionality
+// Fixed Navigation functionality with new sections
 function initializeNavigation() {
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -195,7 +198,7 @@ function initializeNavigation() {
     console.log('🧭 Initializing navigation with', navLinks.length, 'nav links');
     
     // Add scroll effect to navbar with glassmorphism
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', debounce(function() {
         if (window.scrollY > 100) {
             navbar.classList.add('scrolled');
         } else {
@@ -204,7 +207,7 @@ function initializeNavigation() {
         
         // Update active nav link based on scroll position
         updateActiveNavLink();
-    });
+    }, 10));
     
     // Fixed click handlers to nav links
     navLinks.forEach((link, index) => {
@@ -213,6 +216,7 @@ function initializeNavigation() {
         
         link.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             
             // Track interaction
             interactionCount++;
@@ -230,20 +234,29 @@ function initializeNavigation() {
                 
                 console.log('📍 Scrolling to position:', offsetTop);
                 
-                // Fixed smooth scroll implementation
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
+                // Use native scroll with smooth behavior
+                try {
+                    window.scrollTo({
+                        top: Math.max(0, offsetTop),
+                        behavior: 'smooth'
+                    });
+                } catch (scrollError) {
+                    // Fallback for browsers that don't support smooth scrolling
+                    window.scrollTo(0, Math.max(0, offsetTop));
+                }
                 
-                // Update active state
-                updateActiveNavLink();
+                // Update active state immediately
+                setTimeout(() => {
+                    updateActiveNavLink();
+                }, 100);
                 
                 // Close mobile menu if open
                 closeMobileNavigation();
                 
                 // Add visual feedback
-                addGlassPulseEffect(targetElement);
+                setTimeout(() => {
+                    addGlassPulseEffect(targetElement);
+                }, 300);
                 
             } else {
                 console.error('❌ Target element not found:', targetId);
@@ -251,7 +264,7 @@ function initializeNavigation() {
         });
     });
     
-    console.log('✅ Navigation initialized');
+    console.log('✅ Navigation initialized with new sections');
 }
 
 // Update active navigation link based on scroll position
@@ -260,12 +273,13 @@ function updateActiveNavLink() {
     const navLinks = document.querySelectorAll('.nav-link');
     
     let current = '';
+    const scrollPosition = window.scrollY + 150; // Add offset for better detection
     
     sections.forEach(section => {
-        const sectionTop = section.offsetTop - 120;
+        const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
         
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
             current = section.getAttribute('id');
         }
     });
@@ -283,7 +297,7 @@ function initializeProgressBar() {
     const progressBar = document.getElementById('progressBar');
     
     if (progressBar) {
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', debounce(function() {
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -292,7 +306,7 @@ function initializeProgressBar() {
             const clampedPercent = Math.min(100, Math.max(0, scrollPercent));
             
             progressBar.style.width = clampedPercent + '%';
-        });
+        }, 10));
         
         console.log('📊 Progress bar initialized');
     }
@@ -306,9 +320,15 @@ function initializeTimeline() {
     console.log('⏰ Timeline buttons found:', timelineButtons.length);
     console.log('📋 Timeline items found:', timelineItems.length);
     
-    timelineButtons.forEach(button => {
+    if (timelineButtons.length === 0 || timelineItems.length === 0) {
+        console.error('❌ Timeline elements not found');
+        return;
+    }
+    
+    timelineButtons.forEach((button, index) => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             
             const year = this.getAttribute('data-year');
             console.log('📅 Timeline button clicked for year:', year);
@@ -323,39 +343,53 @@ function initializeTimeline() {
             this.classList.add('active');
             this.setAttribute('aria-selected', 'true');
             
-            // Hide all timeline items
+            // Hide all timeline items with animation
             timelineItems.forEach(item => {
                 item.classList.remove('active');
+                item.style.display = 'none';
             });
             
-            // Show selected timeline item
-            const targetItem = document.querySelector(`.timeline-item[data-year="${year}"]`);
-            console.log('Target timeline item:', !!targetItem);
-            
-            if (targetItem) {
-                targetItem.classList.add('active');
-                addGlassPulseEffect(targetItem);
-                console.log('✨ Timeline item activated for year:', year);
-            } else {
-                console.error('❌ Timeline item not found for year:', year);
-                // Fallback: show first item if target not found
-                if (timelineItems.length > 0) {
-                    timelineItems[0].classList.add('active');
+            // Show selected timeline item with delay for smooth transition
+            setTimeout(() => {
+                const targetItem = document.querySelector(`.timeline-item[data-year="${year}"]`);
+                console.log('Target timeline item found:', !!targetItem);
+                
+                if (targetItem) {
+                    targetItem.style.display = 'block';
+                    setTimeout(() => {
+                        targetItem.classList.add('active');
+                        addGlassPulseEffect(targetItem);
+                    }, 50);
+                    console.log('✨ Timeline item activated for year:', year);
+                } else {
+                    console.error('❌ Timeline item not found for year:', year);
+                    // Fallback: show first item if target not found
+                    if (timelineItems.length > 0) {
+                        timelineItems[0].style.display = 'block';
+                        timelineItems[0].classList.add('active');
+                    }
                 }
-            }
+            }, 100);
         });
     });
     
     // Initialize first timeline item as active
     if (timelineItems.length > 0 && timelineButtons.length > 0) {
+        timelineItems.forEach(item => {
+            item.style.display = 'none';
+            item.classList.remove('active');
+        });
+        
+        timelineItems[0].style.display = 'block';
         timelineItems[0].classList.add('active');
         timelineButtons[0].classList.add('active');
+        timelineButtons[0].setAttribute('aria-selected', 'true');
     }
     
-    console.log('✅ Timeline initialized');
+    console.log('✅ Timeline initialized and fixed');
 }
 
-// Enhanced Impact Analysis functionality
+// Enhanced Impact Analysis functionality - FIXED
 function initializeImpactAnalysis() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.impact-tab-content');
@@ -363,9 +397,15 @@ function initializeImpactAnalysis() {
     console.log('📊 Impact tab buttons found:', tabButtons.length);
     console.log('📈 Impact tab contents found:', tabContents.length);
     
-    tabButtons.forEach(button => {
+    if (tabButtons.length === 0 || tabContents.length === 0) {
+        console.error('❌ Impact analysis elements not found');
+        return;
+    }
+    
+    tabButtons.forEach((button, index) => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             
             const tab = this.getAttribute('data-tab');
             console.log('🔄 Impact tab clicked:', tab);
@@ -386,34 +426,47 @@ function initializeImpactAnalysis() {
             // Hide all tab contents
             tabContents.forEach(content => {
                 content.classList.remove('active');
+                content.style.display = 'none';
             });
             
-            // Show selected tab content
-            const targetContent = document.querySelector(`.impact-tab-content[data-tab="${tab}"]`);
-            console.log('Target tab content:', !!targetContent);
-            
-            if (targetContent) {
-                targetContent.classList.add('active');
-                console.log('✨ Tab content activated for:', tab);
-            }
-            
-            // Load data for selected tab
+            // Show selected tab content with delay
             setTimeout(() => {
-                loadImpactData(tab, true);
-            }, 50);
+                const targetContent = document.querySelector(`.impact-tab-content[data-tab="${tab}"]`);
+                console.log('Target tab content found:', !!targetContent);
+                
+                if (targetContent) {
+                    targetContent.style.display = 'block';
+                    setTimeout(() => {
+                        targetContent.classList.add('active');
+                    }, 50);
+                    console.log('✨ Tab content activated for:', tab);
+                }
+                
+                // Load data for selected tab with proper delay
+                setTimeout(() => {
+                    loadImpactData(tab, true);
+                }, 100);
+            }, 100);
         });
     });
     
     // Initialize first tab as active
     if (tabContents.length > 0 && tabButtons.length > 0) {
+        tabContents.forEach(content => {
+            content.style.display = 'none';
+            content.classList.remove('active');
+        });
+        
+        tabContents[0].style.display = 'block';
         tabContents[0].classList.add('active');
         tabButtons[0].classList.add('active');
+        tabButtons[0].setAttribute('aria-selected', 'true');
     }
     
-    console.log('✅ Impact analysis initialized');
+    console.log('✅ Impact analysis initialized and fixed');
 }
 
-// Enhanced load impact data with animations
+// Enhanced load impact data with animations - FIXED
 function loadImpactData(type, animated = false) {
     console.log('📊 Loading impact data for type:', type);
     
@@ -425,6 +478,19 @@ function loadImpactData(type, animated = false) {
         return;
     }
     
+    // Clear existing content with fade effect
+    if (animated) {
+        container.style.opacity = '0';
+        setTimeout(() => {
+            renderImpactCards(container, type);
+            container.style.opacity = '1';
+        }, 200);
+    } else {
+        renderImpactCards(container, type);
+    }
+}
+
+function renderImpactCards(container, type) {
     // Clear existing content
     container.innerHTML = '';
     
@@ -432,6 +498,7 @@ function loadImpactData(type, animated = false) {
     
     if (!data) {
         console.error('❌ No impact data found for type:', type);
+        container.innerHTML = '<p>No data available</p>';
         return;
     }
     
@@ -449,12 +516,150 @@ function loadImpactData(type, animated = false) {
             </ul>
         `;
         
+        // Add staggered animation delay
+        impactCard.style.animationDelay = `${index * 0.1}s`;
+        
         fragment.appendChild(impactCard);
         console.log('✨ Added impact card for year:', year);
     });
     
     container.appendChild(fragment);
     console.log('✅ Impact data loaded successfully for type:', type);
+}
+
+// Initialize new sections functionality
+function initializeNewSections() {
+    console.log('🆕 Initializing new sections functionality...');
+    
+    // Initialize Stages of AI section
+    initializeStagesSection();
+    
+    // Initialize Technologies section
+    initializeTechnologiesSection();
+    
+    // Initialize Applications section
+    initializeApplicationsSection();
+    
+    // Initialize Ethics section
+    initializeEthicsSection();
+    
+    console.log('✅ New sections initialized');
+}
+
+// Initialize Stages of AI section
+function initializeStagesSection() {
+    const stageCards = document.querySelectorAll('.stage-card');
+    
+    console.log('🔄 Initializing Stages section with', stageCards.length, 'stage cards');
+    
+    stageCards.forEach((card, index) => {
+        // Add enhanced hover effects
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+            addGlowEffect(this);
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            removeGlowEffect(this);
+        });
+        
+        // Add click interaction for mobile
+        card.addEventListener('click', function() {
+            addClickRippleEffect(this);
+            const stageName = this.querySelector('h3')?.textContent || 'Unknown stage';
+            console.log('📱 Stage card clicked:', stageName);
+        });
+    });
+    
+    console.log('✅ Stages section initialized');
+}
+
+// Initialize Technologies section
+function initializeTechnologiesSection() {
+    const techCards = document.querySelectorAll('.tech-card');
+    
+    console.log('🔧 Initializing Technologies section with', techCards.length, 'tech cards');
+    
+    techCards.forEach((card, index) => {
+        // Add enhanced hover effects
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+            addGlowEffect(this);
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            removeGlowEffect(this);
+        });
+        
+        // Add click interaction
+        card.addEventListener('click', function() {
+            addClickRippleEffect(this);
+            const techName = this.querySelector('h3')?.textContent || 'Unknown technology';
+            console.log('🔧 Technology card clicked:', techName);
+        });
+    });
+    
+    console.log('✅ Technologies section initialized');
+}
+
+// Initialize Applications section
+function initializeApplicationsSection() {
+    const appCards = document.querySelectorAll('.app-card');
+    
+    console.log('📱 Initializing Applications section with', appCards.length, 'app cards');
+    
+    appCards.forEach((card, index) => {
+        // Add enhanced hover effects
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+            addGlowEffect(this);
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            removeGlowEffect(this);
+        });
+        
+        // Add click interaction
+        card.addEventListener('click', function() {
+            addClickRippleEffect(this);
+            const appName = this.querySelector('h3')?.textContent || 'Unknown application';
+            console.log('📱 Application card clicked:', appName);
+        });
+    });
+    
+    console.log('✅ Applications section initialized');
+}
+
+// Initialize Ethics section
+function initializeEthicsSection() {
+    const ethicsCards = document.querySelectorAll('.ethics-card');
+    
+    console.log('⚖️ Initializing Ethics section with', ethicsCards.length, 'ethics cards');
+    
+    ethicsCards.forEach((card, index) => {
+        // Add enhanced hover effects
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+            addGlowEffect(this);
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            removeGlowEffect(this);
+        });
+        
+        // Add click interaction
+        card.addEventListener('click', function() {
+            addClickRippleEffect(this);
+            const ethicsName = this.querySelector('h3')?.textContent || 'Unknown ethics topic';
+            console.log('⚖️ Ethics card clicked:', ethicsName);
+        });
+    });
+    
+    console.log('✅ Ethics section initialized');
 }
 
 // Enhanced sources section functionality
@@ -528,7 +733,7 @@ function initializeGlassmorphismEffects() {
     console.log('✨ Initializing glassmorphism effects...');
     
     // Add floating animation to glassmorphism elements
-    const glassElements = document.querySelectorAll('.source-card, .timeline-content, .impact-card, .scenario-card, .recommendation-category');
+    const glassElements = document.querySelectorAll('.source-card, .timeline-content, .impact-card, .scenario-card, .recommendation-category, .stage-card, .tech-card, .app-card, .ethics-card');
     
     glassElements.forEach((element, index) => {
         // Add mouse parallax effect
@@ -558,7 +763,7 @@ function initializeGlassmorphismEffects() {
 function initializeAccessibilityFeatures() {
     console.log('♿ Initializing accessibility features...');
     
-    // Add comprehensive ARIA labels
+    // Add comprehensive ARIA labels with delay to ensure elements exist
     setTimeout(() => {
         const timelineButtons = document.querySelectorAll('.timeline-btn');
         timelineButtons.forEach((btn, index) => {
@@ -586,8 +791,41 @@ function initializeAccessibilityFeatures() {
             }
         });
         
+        // Add ARIA labels for new sections
+        const stageCards = document.querySelectorAll('.stage-card');
+        stageCards.forEach(card => {
+            const title = card.querySelector('h3');
+            if (title) {
+                card.setAttribute('aria-label', `Learn about ${title.textContent} stage of AI development`);
+            }
+        });
+        
+        const techCards = document.querySelectorAll('.tech-card');
+        techCards.forEach(card => {
+            const title = card.querySelector('h3');
+            if (title) {
+                card.setAttribute('aria-label', `Explore ${title.textContent} technology`);
+            }
+        });
+        
+        const appCards = document.querySelectorAll('.app-card');
+        appCards.forEach(card => {
+            const title = card.querySelector('h3');
+            if (title) {
+                card.setAttribute('aria-label', `Discover AI applications in ${title.textContent}`);
+            }
+        });
+        
+        const ethicsCards = document.querySelectorAll('.ethics-card');
+        ethicsCards.forEach(card => {
+            const title = card.querySelector('h3');
+            if (title) {
+                card.setAttribute('aria-label', `Learn about ${title.textContent} in AI ethics`);
+            }
+        });
+        
         console.log('✅ Accessibility attributes added');
-    }, 100);
+    }, 500);
     
     // Add keyboard navigation enhancements
     document.addEventListener('keydown', function(e) {
@@ -647,7 +885,9 @@ function initializeMobileNav() {
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
-                closeMobileNavigation();
+                setTimeout(() => {
+                    closeMobileNavigation();
+                }, 100);
                 console.log('📱 Mobile nav closed via link click');
             });
         });
@@ -695,12 +935,18 @@ function initializeSmoothScrolling() {
                 const navbarHeight = navbar ? navbar.offsetHeight : 80;
                 const offsetTop = targetElement.offsetTop - navbarHeight - 10;
                 
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
+                try {
+                    window.scrollTo({
+                        top: Math.max(0, offsetTop),
+                        behavior: 'smooth'
+                    });
+                } catch (scrollError) {
+                    window.scrollTo(0, Math.max(0, offsetTop));
+                }
                 
-                addGlassPulseEffect(targetElement);
+                setTimeout(() => {
+                    addGlassPulseEffect(targetElement);
+                }, 300);
             }
         });
     });
@@ -732,6 +978,7 @@ function addClickRippleEffect(element) {
         width: 50px;
         height: 50px;
         margin: -25px 0 0 -25px;
+        z-index: 10;
     `;
     
     element.style.position = 'relative';
@@ -803,6 +1050,10 @@ window.addEventListener('error', function(e) {
     console.error('💥 Application error:', e.error);
 });
 
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('💥 Unhandled promise rejection:', e.reason);
+});
+
 // Add CSS animations for enhanced effects
 const styleSheet = document.createElement('style');
 styleSheet.textContent = `
@@ -832,8 +1083,10 @@ function debugSections() {
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         debugSections();
-        console.log('🎉 Enhanced AI Future Report fully loaded and interactive!');
-    }, 1000);
+        console.log('🎉 Enhanced AI Future Report with New Sections fully loaded and interactive!');
+        console.log('📊 New sections added: Stages of AI, Technologies, Applications, Ethics');
+        console.log('🔧 Fixed: Navigation, Timeline switching, Impact Analysis tabs');
+    }, 2000);
 });
 
 // Export functions for potential testing
@@ -844,6 +1097,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initializeTimeline,
         initializeImpactAnalysis,
         initializeSourcesSection,
+        initializeNewSections,
         loadImpactData
     };
 }

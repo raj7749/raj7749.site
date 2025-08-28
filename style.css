@@ -824,7 +824,7 @@ body {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .nav-link {
@@ -833,6 +833,7 @@ body {
     font-weight: 500;
     transition: color 0.3s ease;
     position: relative;
+    font-size: 0.9rem;
 }
 
 .nav-link:hover,
@@ -1065,8 +1066,22 @@ section {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
     position: relative;
+    background: linear-gradient(45deg, var(--accent-light), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .section-title::after {
@@ -1179,9 +1194,420 @@ section {
     border-bottom: none;
 }
 
+/* Stages of AI Section */
+.stages-section {
+    background: var(--color-bg-2);
+}
+
+.stages-progression {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.stage-card {
+    background: var(--glass-bg);
+    border-radius: 16px;
+    padding: 2.5rem;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stage-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-light));
+}
+
+.stage-card.current-stage::before {
+    background: linear-gradient(90deg, #4CAF50, #81C784);
+}
+
+.stage-card.development-stage::before {
+    background: linear-gradient(90deg, #FF9800, #FFB74D);
+}
+
+.stage-card.theoretical-stage::before {
+    background: linear-gradient(90deg, #9C27B0, #BA68C8);
+}
+
+.stage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.stage-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.stage-header h3 {
+    color: var(--accent-light);
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.stage-timeline {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.stage-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stage-status.current {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.stage-status.development {
+    background: rgba(255, 152, 0, 0.2);
+    color: #FF9800;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.stage-status.theoretical {
+    background: rgba(156, 39, 176, 0.2);
+    color: #9C27B0;
+    border: 1px solid rgba(156, 39, 176, 0.3);
+}
+
+.stage-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.stage-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.content-group h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.content-group ul {
+    list-style: none;
+    padding: 0;
+}
+
+.content-group li {
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.content-group li::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+    font-size: 0.8rem;
+}
+
+/* Technologies Section */
+.technologies-section {
+    background: var(--color-bg-3);
+}
+
+.technologies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.tech-card {
+    background: var(--glass-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.tech-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 15px 40px rgba(50, 130, 184, 0.2);
+}
+
+.tech-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.tech-card h3 {
+    color: var(--accent-light);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.tech-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.tech-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    text-align: left;
+}
+
+.tech-types h4,
+.tech-applications h4 {
+    color: var(--accent-cyan);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.25rem;
+}
+
+.tech-types ul,
+.tech-applications ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tech-types li,
+.tech-applications li {
+    padding: 0.25rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 1rem;
+}
+
+.tech-types li::before,
+.tech-applications li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+}
+
+/* Applications Section */
+.applications-section {
+    background: var(--color-bg-4);
+}
+
+.applications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.app-card {
+    background: var(--glass-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.app-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-light));
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.app-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.app-card h3 {
+    color: var(--accent-light);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.app-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.app-examples h4 {
+    color: var(--accent-cyan);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.app-examples ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.app-examples li {
+    padding: 0.4rem 0;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+}
+
+.app-examples li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+}
+
+.app-impact {
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-cyan);
+    font-style: italic;
+}
+
+/* Ethics Section */
+.ethics-section {
+    background: var(--color-bg-5);
+}
+
+.ethics-topics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+}
+
+.ethics-card {
+    background: var(--glass-bg);
+    border-radius: 16px;
+    padding: 2.5rem;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+}
+
+.ethics-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.ethics-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    text-align: center;
+}
+
+.ethics-card h3 {
+    color: var(--accent-light);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.ethics-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.ethics-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.ethics-challenges h4,
+.ethics-solutions h4 {
+    color: var(--accent-cyan);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.ethics-challenges ul,
+.ethics-solutions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.ethics-challenges li,
+.ethics-solutions li {
+    padding: 0.5rem 0;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.ethics-challenges li::before {
+    content: '⚠';
+    position: absolute;
+    left: 0;
+    color: #FF9800;
+}
+
+.ethics-solutions li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+}
+
 /* Impact Analysis Section */
 .impact-section {
-    background: var(--color-bg-2);
+    background: var(--color-bg-6);
 }
 
 .impact-tabs {
@@ -1279,7 +1705,7 @@ section {
 
 /* Scenarios Section */
 .scenarios-section {
-    background: var(--color-bg-3);
+    background: var(--color-bg-7);
 }
 
 .scenarios-grid {
@@ -1343,7 +1769,7 @@ section {
 
 /* Recommendations Section */
 .recommendations-section {
-    background: var(--color-bg-4);
+    background: var(--color-bg-8);
 }
 
 .recommendations-grid {
@@ -1417,7 +1843,7 @@ section {
 
 /* Enhanced Sources Section with Glassmorphism */
 .sources-section {
-    background: var(--color-bg-6);
+    background: var(--color-bg-1);
     position: relative;
 }
 
@@ -1704,7 +2130,7 @@ section {
 
 /* Conclusion Section */
 .conclusion-section {
-    background: var(--color-bg-5);
+    background: var(--color-bg-2);
     text-align: center;
 }
 
@@ -1842,6 +2268,7 @@ section {
         box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
         padding: 2rem 0;
         backdrop-filter: var(--glass-blur);
+        gap: 1rem;
     }
 
     .nav-menu.active {
@@ -1874,6 +2301,26 @@ section {
     }
 
     .timeline-details {
+        grid-template-columns: 1fr;
+    }
+
+    .stage-content {
+        grid-template-columns: 1fr;
+    }
+
+    .technologies-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .applications-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ethics-topics {
+        grid-template-columns: 1fr;
+    }
+
+    .ethics-content {
         grid-template-columns: 1fr;
     }
 
@@ -1928,6 +2375,10 @@ section {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .tech-details {
+        grid-template-columns: 1fr;
+    }
+
     .sources-grid {
         grid-template-columns: 1fr;
     }
@@ -1944,6 +2395,11 @@ section {
 
     .methodology-stats {
         grid-template-columns: 1fr;
+    }
+
+    .stage-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
 
@@ -1988,7 +2444,11 @@ section {
 .source-category,
 .timeline-content,
 .impact-card,
-.scenario-card {
+.scenario-card,
+.stage-card,
+.tech-card,
+.app-card,
+.ethics-card {
     animation: glassFloat 6s ease-in-out infinite;
 }
 
