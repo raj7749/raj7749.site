@@ -1005,7 +1005,7 @@ body {
 }
 
 .findings-list li::before {
-    content: '→';
+    content: 'â†’';
     position: absolute;
     left: 0;
     color: var(--accent-cyan);
@@ -1183,7 +1183,7 @@ section {
 }
 
 .detail-group li::before {
-    content: '•';
+    content: 'â€¢';
     position: absolute;
     left: 0;
     color: var(--accent-cyan);
@@ -1328,7 +1328,7 @@ section {
 }
 
 .content-group li::before {
-    content: '▶';
+    content: 'â–¶';
     position: absolute;
     left: 0;
     color: var(--accent-cyan);
@@ -1414,7 +1414,7 @@ section {
 
 .tech-types li::before,
 .tech-applications li::before {
-    content: '•';
+    content: 'â€¢';
     position: absolute;
     left: 0;
     color: var(--accent-cyan);
@@ -1498,7 +1498,7 @@ section {
 }
 
 .app-examples li::before {
-    content: '▸';
+    content: 'â–¸';
     position: absolute;
     left: 0;
     color: var(--accent-cyan);
@@ -1592,14 +1592,14 @@ section {
 }
 
 .ethics-challenges li::before {
-    content: '⚠';
+    content: 'âš ';
     position: absolute;
     left: 0;
     color: #FF9800;
 }
 
 .ethics-solutions li::before {
-    content: '✓';
+    content: 'âœ“';
     position: absolute;
     left: 0;
     color: #4CAF50;
@@ -1696,7 +1696,7 @@ section {
 }
 
 .impact-card li::before {
-    content: '▶';
+    content: 'â–¶';
     position: absolute;
     left: 0;
     color: var(--accent-cyan);
@@ -1830,7 +1830,7 @@ section {
 }
 
 .recommendation-group li::before {
-    content: '✓';
+    content: 'âœ“';
     position: absolute;
     left: 0;
     color: var(--accent-cyan);
