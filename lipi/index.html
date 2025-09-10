@@ -180,6 +180,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             min-height: 40px;
             align-items: center;
+            position: relative; /* Added for positioning dropdown-container */
         }
         .menu-left, .menu-right {
             display: flex;
@@ -440,19 +441,111 @@
         canvas.decorationsOverviewRuler {
             display: none !important;
         }
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    justify-content: space-between; /* Changed to space-between for clearer spacing */
+    width: 30px; /* Slightly wider */
+    height: 24px; /* Increased height for better bar separation */
+    cursor: pointer;
+    padding: 2px; /* Reduced padding to give more space to bars */
+    margin-right: 15px;
+}
+
+.hamburger-menu .bar {
+    width: 100%;
+    height: 3px;
+    background-color: #333;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .hamburger-menu .bar,
+body[data-app-theme="dark"] .hamburger-menu .bar {
+    background-color: #eee;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex; /* Show hamburger on small screens */
+    }
+
+    .menu-left .dropdown {
+        display: none; /* Hide individual dropdowns */
+    }
+
+    .dropdown-container {
+        display: none; /* Hide the container by default on small screens */
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /* Position relative to parent .menu-bar */
+        left: 0;
+        width: 100%;
+        background-color: #b0e0e6; /* Light blue */
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 99;
+    }
+
+    body.dark-mode .dropdown-container,
+    body[data-app-theme="dark"] .dropdown-container {
+        background-color: #37474f; /* Darker bluish gray */
+    }
+
+    .dropdown-container.active {
+        display: flex; /* Show when active */
+    }
+
+    .dropdown-container .dropdown {
+        display: block; /* Show dropdowns within the active container */
+        width: 100%;
+    }
+
+    .dropdown-container .dropbtn {
+        width: 100%;
+        text-align: left;
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .dropdown-container .dropdown-content {
+        position: static; /* Remove absolute positioning */
+        box-shadow: none;
+        border-radius: 0;
+        padding-left: 20px; /* Indent sub-items */
+        background-color: rgba(0,0,0,0.05); /* Slightly different background for sub-menus */
+    }
+
+    body.dark-mode .dropdown-container .dropdown-content,
+    body[data-app-theme="dark"] .dropdown-container .dropdown-content {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    .dropdown-container .dropdown-content a {
+        padding: 8px 15px;
+    }
+}
     </style>
 </head>
 <body>
 
     <div class="menu-bar">
         <div class="menu-left">
-            <div class="dropdown">
+            <div class="hamburger-menu">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <div class="dropdown-container">
+                <div class="dropdown">
                 <button class="dropbtn">File</button>
                 <div class="dropdown-content">
                     <a href="#" id="new-btn">New</a>
                     <a href="#" id="open-btn">Open</a>
                     <div class="dropdown">
-                        <a href="#">Recent Files</a>
+                        <a href="#" id="recent-files-link">Recent Files</a>
                         <div class="dropdown-content" id="recent-files-dropdown">
                             <!-- Recent files will be populated here -->
                         </div>
@@ -517,6 +610,7 @@
                     <a href="#" id="about-btn">About</a>
                 </div>
             </div>
+            </div> <!-- Close dropdown-container -->
         </div>
         <div class="menu-right">
             <div class="product-name">
@@ -785,11 +879,13 @@
                         // Verify permissions and open the file
                         const permissionStatus = await fileInfo.handle.queryPermission({ mode: 'read' });
                         if (permissionStatus === 'granted') {
-                            openFileFromHandle(fileInfo.handle);
+                            await openFileFromHandle(fileInfo.handle); // Await this to ensure file is open before closing menu
+                            closeAllMenus(); // Close all menus after opening file
                         } else if (permissionStatus === 'prompt') {
                             const newPermissionStatus = await fileInfo.handle.requestPermission({ mode: 'read' });
                             if (newPermissionStatus === 'granted') {
-                                openFileFromHandle(fileInfo.handle);
+                                await openFileFromHandle(fileInfo.handle);
+                                closeAllMenus(); // Close all menus after opening file
                             } else {
                                 alert('Permission to access the file was denied.');
                             }
@@ -982,6 +1078,7 @@
                 tab.isDirty = false;
                 renderTabs();
                 updateTitle();
+                await addFileToRecentDB(handle); // Add to recent files DB
             } catch (err) {
                 if (err.name !== 'AbortError') console.error(err);
             } finally {
@@ -1059,12 +1156,41 @@
             };
         }
 
+        function closeAllMenus() {
+            // Close all regular dropdowns
+            document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+                dropdown.style.removeProperty('display');
+            });
+
+            // Close hamburger menu if active
+            const dropdownContainer = document.querySelector('.dropdown-container');
+            if (dropdownContainer && dropdownContainer.classList.contains('active')) {
+                dropdownContainer.classList.remove('active');
+            }
+        }
+
         // --- Event Listeners ---
         function setupEventListeners() {
             document.getElementById('new-btn').addEventListener('click', newFile);
             document.getElementById('open-btn').addEventListener('click', openFile);
-            // Populate recent files menu when the File dropdown is hovered
+            // Populate recent files menu when the File dropdown is hovered (desktop)
             document.querySelector('.menu-left .dropdown:first-child').addEventListener('mouseenter', populateRecentFilesMenu);
+
+            // Populate recent files menu when "Recent Files" link is clicked (mobile/desktop)
+            document.getElementById('recent-files-link').addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default link behavior
+                populateRecentFilesMenu(); // Populate the menu
+
+                // Toggle visibility of the nested dropdown content
+                const recentFilesDropdownContent = document.getElementById('recent-files-dropdown');
+                if (recentFilesDropdownContent) {
+                    if (recentFilesDropdownContent.style.display === 'block') {
+                        recentFilesDropdownContent.style.display = 'none';
+                    } else {
+                        recentFilesDropdownContent.style.display = 'block';
+                    }
+                }
+            });
             document.getElementById('save-btn').addEventListener('click', saveFile);
             document.getElementById('save-as-btn').addEventListener('click', saveFileAs);
             document.getElementById('close-btn').addEventListener('click', () => {
@@ -1168,10 +1294,25 @@
 
             // Close dropdowns when a menu item is clicked
             document.querySelectorAll('.dropdown-content a').forEach(item => {
-                item.addEventListener('click', () => {
-                    const dropdownContent = item.closest('.dropdown-content');
-                    if (dropdownContent) {
-                        dropdownContent.style.removeProperty('display');
+                item.addEventListener('click', (e) => {
+                    // If the clicked item is the "Recent Files" link, prevent default closing behavior
+                    if (item.id === 'recent-files-link') {
+                        // The specific handler for 'recent-files-link' will manage its nested dropdown visibility
+                        // We don't want to close the main menu here, as the user is trying to open a submenu
+                        return;
+                    }
+
+                    // Close regular dropdowns
+                    let currentDropdownContent = item.closest('.dropdown-content');
+                    while (currentDropdownContent) {
+                        currentDropdownContent.style.removeProperty('display');
+                        currentDropdownContent = currentDropdownContent.parentElement.closest('.dropdown-content');
+                    }
+
+                    // Close hamburger menu if active
+                    const dropdownContainer = document.querySelector('.dropdown-container');
+                    if (dropdownContainer && dropdownContainer.classList.contains('active')) {
+                        dropdownContainer.classList.remove('active');
                     }
                 });
             });
@@ -1182,6 +1323,16 @@
                     saveFile();
                 }
             });
+
+            // Hamburger menu toggle
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const dropdownContainer = document.querySelector('.dropdown-container');
+
+            if (hamburgerMenu && dropdownContainer) {
+                hamburgerMenu.addEventListener('click', () => {
+                    dropdownContainer.classList.toggle('active');
+                });
+            }
         }
 
         function updateToggleMenuItem(elementId, isOn, text) {
