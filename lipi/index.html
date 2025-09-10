@@ -621,7 +621,9 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
 
     <div id="tab-bar"></div>
     <div id="editor-container"></div>
-    <div id="status-bar"></div>
+    <div id="status-bar">
+        <button id="edit-mode-toggle" style="margin-left: auto; padding: 3px 8px; cursor: pointer;">Enable Editing</button>
+    </div>
     <div id="loading-overlay"><div class="loader"></div></div>
     <div id="about-modal" class="modal">
         <div class="modal-content">
@@ -1146,12 +1148,18 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
                 diffModal.style.display = 'none';
                 originalModel.dispose();
                 modifiedModel.dispose();
+                if (editor) { // Force main editor to re-layout after modal closes
+                    editor.layout();
+                }
             };
             window.onclick = (event) => {
                 if (event.target == diffModal) {
                     diffModal.style.display = 'none';
                     originalModel.dispose();
                     modifiedModel.dispose();
+                    if (editor) { // Force main editor to re-layout after modal closes
+                        editor.layout();
+                    }
                 }
             };
         }
@@ -1166,6 +1174,10 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
             const dropdownContainer = document.querySelector('.dropdown-container');
             if (dropdownContainer && dropdownContainer.classList.contains('active')) {
                 dropdownContainer.classList.remove('active');
+            }
+            // Force Monaco Editor to re-layout after menu state changes
+            if (editor) {
+                editor.layout();
             }
         }
 
@@ -1331,6 +1343,45 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
             if (hamburgerMenu && dropdownContainer) {
                 hamburgerMenu.addEventListener('click', () => {
                     dropdownContainer.classList.toggle('active');
+                    // Force Monaco Editor to re-layout after menu state changes
+                    if (editor) {
+                        editor.layout();
+                    }
+                });
+            }
+
+            // Edit mode toggle
+            const editModeToggleBtn = document.getElementById('edit-mode-toggle');
+            const mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+
+            const applyEditModeLogic = () => {
+                if (editModeToggleBtn) {
+                    if (mobileMediaQuery.matches) { // If in mobile view
+                        // Set editor to read-only initially for mobile
+                        editor.updateOptions({ readOnly: true });
+                        editModeToggleBtn.textContent = 'Enable Editing';
+                        editModeToggleBtn.style.display = 'block'; // Ensure button is visible on mobile
+                    } else { // If in desktop view
+                        editor.updateOptions({ readOnly: false }); // Ensure editable on desktop
+                        editModeToggleBtn.style.display = 'none'; // Hide button on desktop
+                    }
+                }
+            };
+
+            // Apply logic on initial load
+            applyEditModeLogic();
+
+            // Listen for changes in media query (e.g., device rotation, window resize)
+            mobileMediaQuery.addEventListener('change', applyEditModeLogic);
+
+            if (editModeToggleBtn) {
+                editModeToggleBtn.addEventListener('click', () => {
+                    const isReadOnly = editor.getOption(monaco.editor.EditorOption.readOnly);
+                    editor.updateOptions({ readOnly: !isReadOnly });
+                    editModeToggleBtn.textContent = isReadOnly ? 'Disable Editing' : 'Enable Editing';
+                    if (!isReadOnly) { // If switching to editable, focus the editor
+                        editor.focus();
+                    }
                 });
             }
         }
