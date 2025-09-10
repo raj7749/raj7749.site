@@ -527,6 +527,17 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
         padding: 8px 15px;
     }
 }
+
+/* Hide edit mode toggle by default (desktop) */
+#edit-mode-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #edit-mode-toggle {
+        display: block !important; /* Show on mobile */
+    }
+}
     </style>
 </head>
 <body>
@@ -622,6 +633,7 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
     <div id="tab-bar"></div>
     <div id="editor-container"></div>
     <div id="status-bar">
+        <span id="status-text"></span>
         <button id="edit-mode-toggle" style="margin-left: auto; padding: 3px 8px; cursor: pointer;">Enable Editing</button>
     </div>
     <div id="loading-overlay"><div class="loader"></div></div>
@@ -1091,9 +1103,8 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
         updateTitle = () => {
             const tab = getActiveTab();
             const fileName = tab ? tab.name : 'लिपि';
-            const dirtyMarker = tab && tab.isDirty ? '*' : '';
-            const version = document.getElementById('version-info').textContent;
-            document.title = `${dirtyMarker}${fileName} - ${baseTitle} ${version}`;
+            const dirtyMarker = tab && tab.isDirty ? '*' : '';            
+            document.title = `${dirtyMarker}${fileName} - ${baseTitle}`;
         };
 
         applyTheme = (theme) => {
@@ -1360,10 +1371,8 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
                         // Set editor to read-only initially for mobile
                         editor.updateOptions({ readOnly: true });
                         editModeToggleBtn.textContent = 'Enable Editing';
-                        editModeToggleBtn.style.display = 'block'; // Ensure button is visible on mobile
                     } else { // If in desktop view
                         editor.updateOptions({ readOnly: false }); // Ensure editable on desktop
-                        editModeToggleBtn.style.display = 'none'; // Hide button on desktop
                     }
                 }
             };
@@ -1521,7 +1530,7 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
             const position = editor.getPosition();
 
             let statusText = `Ln ${position.lineNumber}, Col ${position.column} | Chars: ${charCount} | Words: ${wordCount}`;
-            statusBar.textContent = statusText;
+            document.getElementById('status-text').textContent = statusText;
         }
 
         function updateSelectionCounts() {
@@ -1533,11 +1542,11 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
                 occurrences = (content.match(regex) || []).length;
             }
 
-            let statusText = statusBar.textContent.split('|')[0];
+            let statusText = document.getElementById('status-text').textContent.split('|')[0];
             if (selectedText.length > 0) {
                 statusText += ` | Selected: ${selectedText.length} | Occurrences: ${occurrences}`;
             }
-            statusBar.textContent = statusText;
+            document.getElementById('status-text').textContent = statusText;
         }
 
         // --- Initial Load ---
