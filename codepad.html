@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>लिपि</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✏️</text></svg>">
+    <style>
+        /* General Resets and Body Styling */
+        html {
+            box-sizing: border-box;
+            height: 100%; /* Ensure html takes full height */
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Prevent unwanted scrolling */
+            display: flex;
+            flex-direction: column;
+            background-color: #e0f2f7; /* Light bluish background */
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            --loader-color: #2196f3; /* Default loader color (a nice blue) */
+        }
+
+        /* Dark Mode */
+        body.dark-mode, body[data-app-theme="dark"] {
+            background-color: #263238; /* Dark bluish background */
+            color: #eee;
+            --loader-color: #64b5f6; /* Lighter blue for dark mode */
+        }
+        body.dark-mode .menu-bar,
+        body[data-app-theme="dark"] .menu-bar,
+        body.dark-mode #tab-bar,
+        body[data-app-theme="dark"] #tab-bar,
+        body.dark-mode #status-bar,
+        body[data-app-theme="dark"] #status-bar {
+            background-color: #37474f; /* Darker bluish gray */
+            border-color: #455a64;
+            color: #eee;
+        }
+        body.dark-mode .dropdown-content,
+        body[data-app-theme="dark"] .dropdown-content {
+            background-color: #455a64;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+        }
+        body.dark-mode .dropdown-content a,
+        body[data-app-theme="dark"] .dropdown-content a {
+            color: #eee;
+        }
+        body.dark-mode .dropdown-content a:hover,
+        body[data-app-theme="dark"] .dropdown-content a:hover {
+            background-color: #546e7a;
+        }
+        body.dark-mode .dropbtn,
+        body[data-app-theme="dark"] .dropbtn {
+            color: #eee;
+        }
+        body.dark-mode #editor-container,
+        body[data-app-theme="dark"] #editor-container {
+            border-color: #455a64;
+        }
+        body.dark-mode .tab,
+        body[data-app-theme="dark"] .tab {
+            background-color: #455a64;
+            border-color: #546e7a;
+            color: #eee;
+        }
+        body.dark-mode .tab.active,
+        body[data-app-theme="dark"] .tab.active {
+            background-color: #263238;
+            border-bottom-color: #263238;
+        }
+        body.dark-mode .tab:hover:not(.active),
+        body[data-app-theme="dark"] .tab:hover:not(.active) {
+            background-color: #546e7a;
+        }
+        body.dark-mode .close-tab-btn,
+        body[data-app-theme="dark"] .close-tab-btn {
+            color: #bbb;
+        }
+        body.dark-mode .close-tab-btn:hover,
+        body[data-app-theme="dark"] .close-tab-btn:hover {
+            color: #fff;
+        }
+        body.dark-mode #theme-toggle-btn,
+        body[data-app-theme="dark"] #theme-toggle-btn {
+            background-color: #37474f;
+            color: #eee;
+        }
+        body.dark-mode #theme-toggle-btn:hover,
+        body[data-app-theme="dark"] #theme-toggle-btn:hover {
+            background-color: #546e7a;
+        }
+        body.dark-mode .modal-content,
+        body[data-app-theme="dark"] .modal-content {
+            background-color: #37474f;
+            color: #eee;
+            border-color: #546e7a;
+        }
+        body.dark-mode .close-modal-btn,
+        body[data-app-theme="dark"] .close-modal-btn {
+            color: #bbb;
+        }
+        body.dark-mode .close-modal-btn:hover,
+        body[data-app-theme="dark"] .close-modal-btn:hover {
+            color: #fff;
+        }
+        /* Loader color for data-app-theme="dark" (vs-dark) */
+        body[data-app-theme="dark"] {
+            --loader-color: #64b5f6; /* Lighter blue for dark themes */
+        }
+        /* Solarized Light Theme (Light) */
+        body[data-app-theme="light"] .menu-bar,
+        body[data-app-theme="light"] #tab-bar,
+        body[data-app-theme="light"] #status-bar {
+            background-color: #b0e0e6; /* Light blue */
+            border-color: #87ceeb;
+            color: #333;
+        }
+        body[data-app-theme="light"] .dropdown-content {
+            background-color: #f0f8ff; /* AliceBlue */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+        body[data-app-theme="light"] .dropdown-content a {
+            color: #333;
+        }
+        body[data-app-theme="light"] .dropdown-content a:hover {
+            background-color: #d9edf7; /* Light blue hover */
+        }
+        body[data-app-theme="light"] .dropbtn {
+            color: #333;
+        }
+        body[data-app-theme="light"] #editor-container {
+            /* No specific border-color for light theme, inherits default */
+        }
+        body[data-app-theme="light"] .tab {
+            background-color: #e0f2f7; /* Light bluish background */
+            border-color: #87ceeb;
+            color: #333;
+        }
+        body[data-app-theme="light"] .tab.active {
+            background-color: #fff;
+            border-bottom-color: #fff;
+        }
+        body[data-app-theme="light"] .tab:hover:not(.active) {
+            background-color: #c0e6ed; /* Slightly darker blue hover */
+        }
+        body[data-app-theme="light"] .close-tab-btn {
+            color: #888;
+        }
+        body[data-app-theme="light"] .close-tab-btn:hover {
+            color: #333;
+        }
+        body[data-app-theme="light"] .modal-content {
+            background-color: #fefefe;
+            color: #333;
+            border-color: #888;
+        }
+        body[data-app-theme="light"] .close-modal-btn {
+            color: #aaa;
+        }
+        body[data-app-theme="light"] .close-modal-btn:hover {
+            color: black;
+        }
+
+
+        /* Menu Bar */
+        .menu-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: #b0e0e6; /* Light blue */
+            padding: 5px 10px;
+            border-bottom: 1px solid #87ceeb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-height: 40px;
+            align-items: center;
+        }
+        .menu-left, .menu-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2196f3; /* A nice blue for the brand name */
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .product-name .icon {
+            margin-right: 5px;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        /* Dropdown Menus */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background-color: transparent;
+            color: #333;
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            border-radius: 4px;
+        }
+        .dropbtn:hover {
+            background-color: #a0dbe2;
+        }
+        body.dark-mode .dropbtn:hover,
+        body[data-app-theme="dark"] .dropbtn:hover {
+            background-color: #455a64; /* Darker bluish gray, matching dropdown content background */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f0f8ff; /* AliceBlue */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                        z-index: 100;
+            border-radius: 4px;
+            /* Removed overflow: hidden; */
+            padding: 5px 0;
+        }
+        .dropdown-content a {
+            color: #333;
+            padding: 10px 16px; /* Original padding */
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            position: relative; /* Needed for nested dropdown positioning */
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden; /* Hide overflowing text */
+            text-overflow: ellipsis; /* Show ellipsis for overflow */
+        }
+        .dropdown-content a:hover {
+            background-color: #d9edf7; /* Light blue hover */
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Nested Dropdown for Recent Files */
+        .dropdown-content .dropdown .dropdown-content {
+            top: 0; /* Align with the top of the parent menu item */
+            left: 100%; /* Position to the right of the parent menu item */
+            margin-left: 0; /* Remove gap */
+            display: none; /* Hidden by default */
+            /* Removed min-width */
+        }
+        .dropdown-content .dropdown:hover > .dropdown-content {
+            display: block; /* Show on hover of the parent menu item */
+        }
+
+        /* Adjust parent link padding to extend hover area */
+        .dropdown-content .dropdown > a {
+            padding-right: 30px; /* Extend hover area to the right */
+        }
+
+        /* Tab Bar */
+        #tab-bar {
+            display: flex;
+            background-color: #b0e0e6; /* Light blue */
+            padding: 0 5px;
+            border-bottom: 1px solid #87ceeb;
+            overflow-x: auto;
+            overflow-y: hidden; /* Hide unwanted vertical scrollbar */
+            white-space: nowrap;
+            min-height: 35px;
+            align-items: flex-end;
+        }
+        .tab {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            margin-right: 2px;
+            background-color: #e0f2f7; /* Light bluish background */
+            border: 1px solid #87ceeb;
+            border-bottom: none;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s, border-color 0.2s;
+            position: relative;
+            top: 1px; /* Overlap border */
+        }
+        .tab:hover:not(.active) {
+            background-color: #c0e6ed; /* Slightly darker blue hover */
+        }
+        .tab.active {
+            background-color: #fff;
+            border-color: #87ceeb;
+            border-bottom-color: #fff; /* Hide bottom border for active tab */
+            cursor: default;
+            font-weight: 500;
+        }
+        .tab-name {
+            margin-right: 8px;
+            max-width: 150px; /* Limit tab name width */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .close-tab-btn {
+            font-size: 16px;
+            line-height: 1;
+            margin-left: 5px;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-tab-btn:hover {
+            color: #333;
+        }
+        .tab.dirty .tab-name::after {
+            content: ' •'; /* Indicator for unsaved changes */
+            color: orange;
+        }
+
+        /* Editor Container */
+        #editor-container {
+            flex-grow: 1;
+            /* Removed border */
+            overflow: hidden; /* Monaco editor handles its own scroll */
+        }
+
+        /* Status Bar */
+        #status-bar {
+            background-color: #b0e0e6; /* Light blue */
+            padding: 5px 10px;
+            border-top: 1px solid #87ceeb;
+            font-size: 12px;
+            color: #555;
+            min-height: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        body.dark-mode #loading-overlay {
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--loader-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal Styles (from previous step, ensuring they are here) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto; /* Centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            -webkit-animation-name: animatetop; /* Add Animation */
+            -webkit-animation-duration: 0.4s;
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        /* Add Animation */
+        @-webkit-keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        @keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        /* The Close Button */
+        .close-modal-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal-btn:hover,
+        .close-modal-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Hide decorationsOverviewRuler if still present */
+        canvas.decorationsOverviewRuler {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-bar">
+        <div class="menu-left">
+            <div class="dropdown">
+                <button class="dropbtn">File</button>
+                <div class="dropdown-content">
+                    <a href="#" id="new-btn">New</a>
+                    <a href="#" id="open-btn">Open</a>
+                    <div class="dropdown">
+                        <a href="#">Recent Files</a>
+                        <div class="dropdown-content" id="recent-files-dropdown">
+                            <!-- Recent files will be populated here -->
+                        </div>
+                    </div>
+                    <a href="#" id="save-btn">Save</a>
+                    <a href="#" id="save-as-btn">Save As</a>
+                    <a href="#" id="close-btn">Close</a>
+                    <a href="#" id="print-btn">Print</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Edit</button>
+                <div class="dropdown-content">
+                    <a href="#" id="undo-btn">Undo</a>
+                    <a href="#" id="redo-btn">Redo</a>
+                    <a href="#" id="cut-btn">Cut</a>
+                    <a href="#" id="copy-btn">Copy</a>
+                    <a href="#" id="paste-btn">Paste</a>
+                    <a href="#" id="select-all-btn">Select All</a>
+                    <a href="#" id="find-btn">Find</a>
+                    <a href="#" id="replace-btn">Replace</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Format</button>
+                <div class="dropdown-content">
+                                        <a href="#" id="uppercase-btn">Uppercase</a>
+                    <a href="#" id="lowercase-btn">Lowercase</a>
+                    <a href="#" id="trim-btn">Trim</a>
+                    <a href="#" id="format-json-btn">Format JSON</a>
+                    <a href="#" id="format-xml-btn">Format XML</a>
+                    <a href="#" id="format-html-btn">Format HTML</a>
+                    <a href="#" id="format-shellscript-btn">Format ShellScript</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">View</button>
+                <div class="dropdown-content">
+                    <a href="#" id="toggle-minimap-btn">Toggle Minimap</a>
+                    <a href="#" id="toggle-wordwrap-btn">Toggle Word Wrap</a>
+                    <div class="dropdown">
+                        <a href="#">Zoom</a>
+                        <div class="dropdown-content">
+                            <a href="#" id="zoom-in-btn">Zoom In</a>
+                            <a href="#" id="zoom-out-btn">Zoom Out</a>
+                            <a href="#" id="reset-zoom-btn">Reset Zoom</a>
+                        </div>
+                    </div>
+                    <a href="#" id="compare-btn">Compare</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Options</button>
+                <div class="dropdown-content">
+                    <a href="#" id="theme-light-btn">Classic Light</a>
+                    <a href="#" id="theme-dark-btn">Classic Dark</a>
+                </div>
+            </div>
+             <div class="dropdown">
+                <button class="dropbtn">Help</button>
+                <div class="dropdown-content">
+                    <a href="#" id="about-btn">About</a>
+                </div>
+            </div>
+        </div>
+        <div class="menu-right">
+            <div class="product-name">
+                <span class="icon">✏️</span> लिपि
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-bar"></div>
+    <div id="editor-container"></div>
+    <div id="status-bar"></div>
+    <div id="loading-overlay"><div class="loader"></div></div>
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal-btn">&times;</span>
+            <h2>लिपि</h2>
+            <p>“Lipi” in Sanskrit means script or writing system — the art or form of inscribing symbols that represent speech.</p>
+            <p>It is a fast and lightweight code editor based on Monaco Editor.</p>
+            <p id="author-info">Author: Rajesh D. Yadav</p>
+            <p id="version-info">Version: 0.7.7 (Build Date: 2025-09-10)</p>
+        </div>
+    </div>
+
+    <div id="diff-modal" class="modal">
+        <div class="modal-content" style="max-width: 90%; height: 90%;">
+            <span class="close-modal-btn">&times;</span>
+            <h2>Compare Files</h2>
+            <div id="diff-editor-container" style="width: 100%; height: calc(100% - 50px);"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
+    <script>
+        // --- State ---
+        const baseTitle = "लिपि";
+        let tabs = [];
+        let activeTabId = null;
+        let editor = null;
+
+        // --- DOM Elements ---
+        const tabBar = document.getElementById('tab-bar');
+        const statusBar = document.getElementById('status-bar');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const recentFilesDropdown = document.getElementById('recent-files-dropdown');
+
+        const DB_NAME = 'LipiDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'recentFiles';
+        const MAX_RECENT_FILES = 10; // User requested last 10
+
+        let db;
+
+        function openLipiDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    resolve(db);
+                };
+
+                request.onerror = (event) => {
+                    console.error('IndexedDB error:', event.target.errorCode);
+                    reject('IndexedDB error');
+                };
+            });
+        }
+
+        async function addFileToRecentDB(fileHandle) {
+            if (!fileHandle) return;
+
+            try {
+                await openLipiDB(); // Ensure DB is open
+                const transaction = db.transaction(STORE_NAME, 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+
+                // Get existing files within the same transaction
+                const existingFiles = await new Promise((resolve, reject) => {
+                    const request = store.getAll();
+                    request.onsuccess = (event) => resolve(event.target.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+
+                const existingEntry = existingFiles.find(entry => entry.name === fileHandle.name);
+
+                if (existingEntry) {
+                    // If exists, remove it to re-add at the top
+                    await new Promise((resolve, reject) => {
+                        const deleteRequest = store.delete(existingEntry.id);
+                        deleteRequest.onsuccess = () => resolve();
+                        deleteRequest.onerror = (event) => reject(event.target.error);
+                    });
+                }
+
+                // Add new file handle
+                const id = Date.now(); // Simple unique ID
+                const entry = { id: id, name: fileHandle.name, handle: fileHandle };
+                await new Promise((resolve, reject) => {
+                    const addRequest = store.add(entry);
+                    addRequest.onsuccess = () => resolve();
+                    addRequest.onerror = (event) => reject(event.target.error);
+                });
+
+                // Enforce MAX_RECENT_FILES limit within the same transaction
+                const allFilesAfterAdd = await new Promise((resolve, reject) => {
+                    const request = store.getAll();
+                    request.onsuccess = (event) => resolve(event.target.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+
+                if (allFilesAfterAdd.length > MAX_RECENT_FILES) {
+                    // Sort by ID (most recent first) and remove oldest
+                    allFilesAfterAdd.sort((a, b) => b.id - a.id); // Sort descending
+                    for (let i = MAX_RECENT_FILES; i < allFilesAfterAdd.length; i++) {
+                        await new Promise((resolve, reject) => {
+                            const deleteRequest = store.delete(allFilesAfterAdd[i].id);
+                            deleteRequest.onsuccess = () => resolve();
+                            deleteRequest.onerror = (event) => reject(event.target.error);
+                        });
+                    }
+                }
+                // Wait for the transaction to complete
+                await new Promise((resolve) => {
+                    transaction.oncomplete = () => resolve();
+                    transaction.onerror = (event) => console.error('Transaction error:', event.target.error);
+                });
+
+            } catch (error) {
+                console.error('Error adding file to IndexedDB:', error);
+            }
+        }
+
+        async function getRecentFilesFromDB() {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    await openLipiDB(); // Ensure DB is open
+                    const transaction = db.transaction(STORE_NAME, 'readonly');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.getAll();
+
+                    request.onsuccess = (event) => {
+                        // Sort by ID (most recent first)
+                        const files = event.target.result.sort((a, b) => b.id - a.id);
+                        resolve(files);
+                    };
+
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        // --- Editor Initialization ---
+        function initializeEditor() {
+            const editorContainer = document.getElementById('editor-container');
+            require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs' }});
+            require(['vs/editor/editor.main'], () => {
+                // Define custom Ocean Blue theme
+                const savedFontSize = localStorage.getItem('editorFontSize');
+                const initialFontSize = savedFontSize ? parseInt(savedFontSize, 10) : 14;
+
+                const savedWordWrap = localStorage.getItem('editorWordWrap');
+                const initialWordWrap = savedWordWrap ? savedWordWrap : 'on'; // Default to 'on'
+
+                editor = monaco.editor.create(editorContainer, {
+                    automaticLayout: true,
+                    fontSize: initialFontSize,
+                    fontFamily: 'Fira Code, monospace',
+                    multiCursorModifier: 'alt',
+                    minimap: { enabled: false },
+                    renderLineHighlight: 'none', // Disable current line highlight
+                    wordWrap: initialWordWrap, // Add word wrap option
+                    folding: true, // Explicitly enable folding
+                    scrollbar: { // Ensure scrollbars appear only when needed
+                        vertical: 'auto',
+                        horizontal: 'auto',
+                        overviewRulerBorder: false // Remove border from overview ruler
+                    }
+                });
+
+                editor.onDidChangeModelContent(() => {
+                    const tab = getActiveTab();
+                    if (tab && editor.getValue() !== tab.content) {
+                        if (!tab.isDirty) {
+                            tab.isDirty = true;
+                            renderTabs();
+                            updateTitle();
+                        }
+                    }
+                    updateCounts();
+                });
+
+                editor.onDidChangeCursorPosition(e => {
+                    updateCounts();
+                });
+
+                editor.onDidChangeCursorSelection(e => {
+                    updateSelectionCounts();
+                });
+
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                applyTheme(savedTheme);
+                newFile(); // Create first tab after editor is ready
+                setupEventListeners();
+                // Set initial state of toggle menu items after editor is ready
+                updateToggleMenuItem('toggle-minimap-btn', editor.getOption(monaco.editor.EditorOption.minimap).enabled, 'Toggle Minimap');
+                updateToggleMenuItem('toggle-wordwrap-btn', editor.getOption(monaco.editor.EditorOption.wordWrap) === 'on', 'Toggle Word Wrap');
+                // Set initial state of toggle menu items after editor is ready
+                updateToggleMenuItem('toggle-minimap-btn', editor.getOption(monaco.editor.EditorOption.minimap).enabled, 'Toggle Minimap');
+                updateToggleMenuItem('toggle-wordwrap-btn', editor.getOption(monaco.editor.EditorOption.wordWrap) === 'on', 'Toggle Word Wrap');
+            });
+        }
+
+        // --- Core Logic ---
+        function getActiveTab() { return tabs.find(t => t.id === activeTabId); }
+
+        function switchTab(id) {
+            const currentTab = getActiveTab();
+            if (currentTab) {
+                currentTab.viewState = editor.saveViewState();
+                currentTab.content = editor.getValue();
+            }
+            activeTabId = id;
+            const newTab = getActiveTab();
+            editor.setValue(newTab.content);
+            monaco.editor.setModelLanguage(editor.getModel(), newTab.language);
+            editor.restoreViewState(newTab.viewState);
+            editor.focus();
+            renderTabs();
+            updateTitle();
+        }
+
+        async function populateRecentFilesMenu() {
+            recentFilesDropdown.innerHTML = ''; // Clear existing items
+            const recentFiles = await getRecentFilesFromDB();
+
+            if (recentFiles.length === 0) {
+                const noRecent = document.createElement('a');
+                noRecent.href = '#';
+                noRecent.textContent = 'No recent files';
+                noRecent.style.pointerEvents = 'none'; // Make it unclickable
+                noRecent.style.opacity = '0.6';
+                recentFilesDropdown.appendChild(noRecent);
+                return;
+            }
+
+            recentFiles.forEach((fileInfo) => {
+                const fileLink = document.createElement('a');
+                fileLink.href = '#';
+                fileLink.textContent = fileInfo.name;
+                fileLink.title = fileInfo.name;
+
+                fileLink.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    try {
+                        // Verify permissions and open the file
+                        const permissionStatus = await fileInfo.handle.queryPermission({ mode: 'read' });
+                        if (permissionStatus === 'granted') {
+                            openFileFromHandle(fileInfo.handle);
+                        } else if (permissionStatus === 'prompt') {
+                            const newPermissionStatus = await fileInfo.handle.requestPermission({ mode: 'read' });
+                            if (newPermissionStatus === 'granted') {
+                                openFileFromHandle(fileInfo.handle);
+                            } else {
+                                alert('Permission to access the file was denied.');
+                            }
+                        } else {
+                            alert('Permission to access the file was denied.');
+                        }
+                    } catch (error) {
+                        console.error('Error opening recent file:', error);
+                        alert('Could not open the file. It might have been moved or deleted, or permissions were revoked.');
+                    }
+                });
+                recentFilesDropdown.appendChild(fileLink);
+            });
+        }
+
+        function renderTabs() {
+            tabBar.innerHTML = '';
+            tabs.forEach(tab => {
+                const tabElement = document.createElement('div');
+                tabElement.className = 'tab';
+                if (tab.id === activeTabId) {
+                    tabElement.classList.add('active');
+                }
+                if (tab.isDirty) {
+                    tabElement.classList.add('dirty');
+                }
+                tabElement.dataset.tabId = tab.id;
+                tabElement.innerHTML = `
+                    <span class="tab-name">${tab.name}</span>
+                    <span class="close-tab-btn">&times;</span>
+                `;
+                tabElement.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('close-tab-btn')) {
+                        closeTab(tab.id);
+                    } else {
+                        switchTab(tab.id);
+                    }
+                });
+                tabBar.appendChild(tabElement);
+            });
+        }
+        function closeTab(id) {
+            const index = tabs.findIndex(tab => tab.id === id);
+            if (index === -1) return;
+
+            const closedTab = tabs[index];
+
+            if (closedTab.isDirty) {
+                const confirmClose = confirm(`"${closedTab.name}" has unsaved changes. Do you want to close it without saving?`);
+                if (!confirmClose) {
+                    return; // User cancelled closing
+                }
+            }
+
+            tabs.splice(index, 1);
+
+            if (closedTab.id === activeTabId) {
+                // If the closed tab was active, switch to another tab
+                if (tabs.length > 0) {
+                    const newActiveTab = tabs[Math.max(0, index - 1)];
+                    switchTab(newActiveTab.id);
+                } else {
+                    // No more tabs, create a new one
+                    newFile();
+                }
+            }
+
+            // Dispose of the Monaco Editor model to prevent memory leaks
+            if (closedTab.model) {
+                closedTab.model.dispose();
+            }
+
+            renderTabs();
+            updateTitle();
+        }
+        function newFile() {
+            const newTab = { id: Date.now(), name: 'Untitled', content: '', fileHandle: null, isDirty: false, language: 'plaintext', viewState: null };
+            tabs.push(newTab);
+            switchTab(newTab.id);
+        };
+
+        function getLanguageFromFileName(fileName) {
+            const extension = fileName.split('.').pop().toLowerCase();
+            switch (extension) {
+                case 'js': return 'javascript';
+                case 'ts': return 'typescript';
+                case 'html': return 'html';
+                case 'css': return 'css';
+                case 'json': return 'json';
+                case 'xml': return 'xml';
+                case 'py': return 'python';
+                case 'java': return 'java';
+                case 'c': return 'c';
+                case 'cpp': return 'cpp';
+                case 'cs': return 'csharp';
+                case 'go': return 'go';
+                case 'php': return 'php';
+                case 'rb': return 'ruby';
+                case 'swift': return 'swift';
+                case 'kt': return 'kotlin';
+                case 'md': return 'markdown';
+                case 'sql': return 'sql';
+                case 'yaml':
+                case 'yml': return 'yaml';
+                case 'sh': return 'shell';
+                case 'bat': return 'bat';
+                case 'ps1': return 'powershell';
+                case 'jsonc': return 'json'; // JSON with comments
+                default: return 'plaintext';
+            }
+        }
+
+        async function openFileFromHandle(fileHandle) {
+            loadingOverlay.style.display = 'flex'; // Show overlay
+            try {
+                // Check if the file is already open
+                for (const tab of tabs) {
+                    if (tab.fileHandle) {
+                        const sameEntry = await tab.fileHandle.isSameEntry(fileHandle);
+                        if (sameEntry) {
+                            switchTab(tab.id);
+                            loadingOverlay.style.display = 'none'; // Hide overlay
+                            return; // File already open, switch to its tab
+                        }
+                    }
+                }
+
+                // If not already open, proceed to open it
+                const file = await fileHandle.getFile();
+                const content = await file.text();
+                const language = getLanguageFromFileName(file.name);
+                const newTab = { id: Date.now(), name: file.name, content, fileHandle: fileHandle, isDirty: false, language, viewState: null };
+                tabs.push(newTab);
+                switchTab(newTab.id);
+                await addFileToRecentDB(fileHandle); // Add to recent files DB
+            } catch (err) {
+                console.error('Error opening file from handle:', err);
+                alert('Could not open the file. It might have been moved or deleted, or permissions were revoked.');
+            } finally {
+                loadingOverlay.style.display = 'none'; // Hide overlay
+            }
+        }
+
+        openFile = async () => {
+            if (!('showOpenFilePicker' in window)) return alert('Your browser does not support this feature.');
+            try {
+                const [handle] = await window.showOpenFilePicker();
+                await openFileFromHandle(handle); // Use the new function to open and add to recent
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+            } finally {
+                // Removed loadingOverlay.style.display = 'none'; from here as it was causing issues
+            }
+        };
+
+        saveFile = async () => {
+            const tab = getActiveTab();
+            if (!tab) return;
+            if (!tab.fileHandle) return saveFileAs();
+
+            loadingOverlay.style.display = 'flex'; // Show overlay
+            try {
+                const writable = await tab.fileHandle.createWritable();
+                await writable.write(editor.getValue());
+                await writable.close();
+                tab.isDirty = false;
+                renderTabs();
+                updateTitle();
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+            } finally {
+                loadingOverlay.style.display = 'none'; // Hide overlay
+            }
+        };
+
+        saveFileAs = async () => {
+            const tab = getActiveTab();
+            if (!tab) return;
+
+            loadingOverlay.style.display = 'flex'; // Show overlay
+            try {
+                const handle = await window.showSaveFilePicker({ types: [{ description: 'Text File', accept: { 'text/plain': ['.txt'] } }] });
+                const writable = await handle.createWritable();
+                await writable.write(editor.getValue());
+                await writable.close();
+                tab.fileHandle = handle;
+                tab.name = handle.name;
+                tab.language = getLanguageFromFileName(handle.name);
+                monaco.editor.setModelLanguage(editor.getModel(), tab.language); // Update editor language
+                tab.isDirty = false;
+                renderTabs();
+                updateTitle();
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+            } finally {
+                loadingOverlay.style.display = 'none'; // Hide overlay
+            }
+        };
+
+        updateTitle = () => {
+            const tab = getActiveTab();
+            const fileName = tab ? tab.name : 'लिपि';
+            const dirtyMarker = tab && tab.isDirty ? '*' : '';
+            const version = document.getElementById('version-info').textContent;
+            document.title = `${dirtyMarker}${fileName} - ${baseTitle} ${version}`;
+        };
+
+        applyTheme = (theme) => {
+            monaco.editor.setTheme(theme);
+
+            // Set data-app-theme attribute for custom app shell styling
+            let appTheme = 'light'; // Default app theme
+            if (theme === 'vs-dark') {
+                appTheme = 'dark';
+            }
+
+            document.body.setAttribute('data-app-theme', appTheme);
+            localStorage.setItem('theme', theme);
+        };
+
+        let diffEditor = null; // Declare diffEditor globally
+
+        function showDiffModal() {
+            const diffModal = document.getElementById('diff-modal');
+            const diffEditorContainer = document.getElementById('diff-editor-container');
+
+            const originalContent = editor.getValue();
+            // Initialize modified content with original content, user can then paste their changes
+            const modifiedContent = originalContent; // Start with original content
+
+            // Display the modal first
+            diffModal.style.display = 'flex';
+
+            
+
+            diffModal.style.display = 'flex'; // Show the modal
+
+            if (!diffEditor) {
+                diffEditor = monaco.editor.createDiffEditor(diffEditorContainer, {
+                    enableSplitViewResizing: true,
+                    renderSideBySide: true,
+                    automaticLayout: true,
+                    readOnly: false, // Allow editing in the modified pane if needed
+                });
+            }
+
+            const originalModel = monaco.editor.createModel(originalContent, getActiveTab().language);
+            const modifiedModel = monaco.editor.createModel(modifiedContent, getActiveTab().language);
+
+            diffEditor.setModel({
+                original: originalModel,
+                modified: modifiedModel
+            });
+
+            // Add event listener for closing the diff modal
+            diffModal.querySelector('.close-modal-btn').onclick = () => {
+                diffModal.style.display = 'none';
+                originalModel.dispose();
+                modifiedModel.dispose();
+            };
+            window.onclick = (event) => {
+                if (event.target == diffModal) {
+                    diffModal.style.display = 'none';
+                    originalModel.dispose();
+                    modifiedModel.dispose();
+                }
+            };
+        }
+
+        // --- Event Listeners ---
+        function setupEventListeners() {
+            document.getElementById('new-btn').addEventListener('click', newFile);
+            document.getElementById('open-btn').addEventListener('click', openFile);
+            // Populate recent files menu when the File dropdown is hovered
+            document.querySelector('.menu-left .dropdown:first-child').addEventListener('mouseenter', populateRecentFilesMenu);
+            document.getElementById('save-btn').addEventListener('click', saveFile);
+            document.getElementById('save-as-btn').addEventListener('click', saveFileAs);
+            document.getElementById('close-btn').addEventListener('click', () => {
+                const activeTab = getActiveTab();
+                if (activeTab) {
+                    closeTab(activeTab.id);
+                }
+            });
+            document.getElementById('print-btn').addEventListener('click', () => {
+                const editorContent = editor.getValue();
+                const printWindow = window.open('', '_blank');
+                printWindow.document.open();
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Print - ${getActiveTab() ? getActiveTab().name : 'Untitled'}</title>
+                        <style>
+                            body {
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                margin: 20px;
+                                white-space: pre-wrap; /* Preserve whitespace and line breaks */
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <pre>${editorContent}</pre>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            });
+            document.getElementById('undo-btn').addEventListener('click', () => editor.trigger('source', 'undo'));
+            document.getElementById('redo-btn').addEventListener('click', () => editor.trigger('source', 'redo'));
+            document.getElementById('cut-btn').addEventListener('click', () => { editor.focus(); editor.trigger('source', 'editor.action.clipboardCutAction'); });
+            document.getElementById('copy-btn').addEventListener('click', () => { editor.focus(); editor.trigger('source', 'editor.action.clipboardCopyAction'); });
+            document.getElementById('paste-btn').addEventListener('click', () => { editor.focus(); editor.trigger('source', 'editor.action.clipboardPasteAction'); });
+            document.getElementById('select-all-btn').addEventListener('click', () => editor.trigger('source', 'editor.action.selectAll'));
+            document.getElementById('find-btn').addEventListener('click', () => editor.trigger('source', 'actions.find'));
+            document.getElementById('replace-btn').addEventListener('click', () => editor.trigger('source', 'editor.action.startFindReplaceAction'));
+            
+            document.getElementById('uppercase-btn').addEventListener('click', () => editor.trigger('source', 'editor.action.transformToUppercase'));
+            document.getElementById('lowercase-btn').addEventListener('click', () => editor.trigger('source', 'editor.action.transformToLowercase'));
+            document.getElementById('trim-btn').addEventListener('click', () => { 
+                const selection = editor.getModel().getValueInRange(editor.getSelection());
+                editor.executeEdits('trim', [{ range: editor.getSelection(), text: selection.trim() }]);
+            });
+            document.getElementById('format-json-btn').addEventListener('click', () => formatJSON());
+            document.getElementById('format-xml-btn').addEventListener('click', () => formatXML());
+            document.getElementById('format-html-btn').addEventListener('click', () => formatHTML());
+            document.getElementById('format-shellscript-btn').addEventListener('click', () => formatShellscript());
+            document.getElementById('toggle-minimap-btn').addEventListener('click', () => {
+                if (editor) {
+                    const currentMinimapEnabled = editor.getOption(monaco.editor.EditorOption.minimap).enabled;
+                    const newMinimapEnabled = !currentMinimapEnabled;
+                    editor.updateOptions({
+                        minimap: {
+                            enabled: newMinimapEnabled
+                        }
+                    });
+                    updateToggleMenuItem('toggle-minimap-btn', newMinimapEnabled, 'Toggle Minimap');
+                }
+            });
+            document.getElementById('zoom-in-btn').addEventListener('click', () => updateFontSize(1));
+            document.getElementById('zoom-out-btn').addEventListener('click', () => updateFontSize(-1));
+            document.getElementById('reset-zoom-btn').addEventListener('click', () => {
+                editor.updateOptions({ fontSize: 14 });
+                localStorage.removeItem('editorFontSize');
+            });
+            document.getElementById('toggle-wordwrap-btn').addEventListener('click', () => {
+                if (editor) {
+                    const currentWordWrap = editor.getOption(monaco.editor.EditorOption.wordWrap);
+                    const newWordWrap = currentWordWrap === 'on' ? 'off' : 'on';
+                    editor.updateOptions({ wordWrap: newWordWrap });
+                    localStorage.setItem('editorWordWrap', newWordWrap);
+                    updateToggleMenuItem('toggle-wordwrap-btn', newWordWrap === 'on', 'Toggle Word Wrap');
+                }
+            });
+            tabBar.addEventListener('dblclick', (e) => { if (e.target === tabBar) newFile(); });
+            document.getElementById('theme-light-btn').addEventListener('click', () => applyTheme('vs'));
+            document.getElementById('theme-dark-btn').addEventListener('click', () => applyTheme('vs-dark'));
+
+            document.getElementById('compare-btn').addEventListener('click', () => showDiffModal());
+
+            // Modal Logic
+            const aboutModal = document.getElementById('about-modal');
+            const closeButtons = document.querySelectorAll('.close-modal-btn');
+
+            document.getElementById('about-btn').addEventListener('click', () => aboutModal.style.display = 'block');
+
+            closeButtons.forEach(btn => btn.addEventListener('click', () => {
+                aboutModal.style.display = 'none';
+            }));
+
+            window.addEventListener('click', (event) => {
+                if (event.target == aboutModal) aboutModal.style.display = 'none';
+            });
+
+            // Close dropdowns when a menu item is clicked
+            document.querySelectorAll('.dropdown-content a').forEach(item => {
+                item.addEventListener('click', () => {
+                    const dropdownContent = item.closest('.dropdown-content');
+                    if (dropdownContent) {
+                        dropdownContent.style.removeProperty('display');
+                    }
+                });
+            });
+
+            window.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    saveFile();
+                }
+            });
+        }
+
+        function updateToggleMenuItem(elementId, isOn, text) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = isOn ? `✓ ${text}` : text;
+            }
+        }
+
+        function updateFontSize(change) {
+            const currentSize = editor.getOption(monaco.editor.EditorOption.fontSize);
+            const newSize = currentSize + change;
+            editor.updateOptions({ fontSize: newSize });
+            localStorage.setItem('editorFontSize', newSize);
+        }
+
+        // --- Word & Character Count ---
+        function formatJSON() {
+            const editorContent = editor.getValue().trim();
+            if (!editorContent.startsWith('{') && !editorContent.startsWith('[')) {
+                alert('Content does not appear to be JSON. It should start with "{" or "[".');
+                return;
+            }
+            try {
+                const parsed = JSON.parse(editorContent);
+                const formattedJson = JSON.stringify(parsed, null, 4);
+                const fullRange = editor.getModel().getFullModelRange();
+                editor.executeEdits('format-json', [{ range: fullRange, text: formattedJson }]);
+            } catch (e) {
+                alert('Invalid JSON: ' + e.message);
+            }
+        }
+
+        function formatXML() {
+            // Basic XML formatting. May not work for complex XML.
+            const editorContent = editor.getValue().trim();
+            if (!editorContent.startsWith('<')) {
+                alert('Content does not appear to be XML. It should start with "<".');
+                return;
+            }
+            try {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(editorContent, "application/xml");
+
+                // Check for parsing errors
+                const errorNode = xmlDoc.querySelector('parsererror');
+                if (errorNode) {
+                    alert('Invalid XML: ' + errorNode.textContent);
+                    return;
+                }
+
+                const serializer = new XMLSerializer();
+                const formattedXml = serializer.serializeToString(xmlDoc);
+
+                // Simple pretty print
+                const prettyXml = formattedXml.replace(/>\s*</g, '>\n<');
+                const fullRange = editor.getModel().getFullModelRange();
+                editor.executeEdits('format-xml', [{ range: fullRange, text: prettyXml }]);
+            } catch (e) {
+                alert('Error formatting XML: ' + e.message);
+            }
+        }
+
+        function formatHTML() {
+            // Basic HTML formatting. May not work for complex HTML.
+            const editorContent = editor.getValue().trim();
+            if (!editorContent.startsWith('<')) {
+                alert('Content does not appear to be HTML. It should start with "<".');
+                return;
+            }
+            try {
+                // A more robust HTML formatter would be needed for complex cases.
+                const fullRange = editor.getModel().getFullModelRange();
+                editor.executeEdits('format-html', [{ range: fullRange, text: editorContent }]);
+            } catch (e) {
+                alert('Error formatting HTML: ' + e.message);
+            }
+        }
+
+        function formatShellscript() {
+            // Basic shell script formatting. May not work for complex scripts.
+            const editorContent = editor.getValue().trim();
+            if (!editorContent.startsWith('#!') &&
+                !editorContent.includes('function ') &&
+                !editorContent.includes('if ') &&
+                !editorContent.includes('for ') &&
+                !editorContent.includes('while ')) {
+                alert('Content does not appear to be a shell script. It should start with "#"! or contain common shell keywords like "function", "if", "for", "while".');
+                return;
+            }
+
+            const lines = editorContent.split('\n');
+            let formattedLines = [];
+            let indentLevel = 0;
+            const indentSize = 4; // 4 spaces for indentation
+
+            const increaseIndentKeywords = ['if', 'for', 'while', 'case', 'function', '{', 'do', 'then'];
+            const decreaseIndentKeywords = ['fi', 'done', 'esac', '}', 'elif', 'else'];
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (line.length === 0) {
+                    formattedLines.push('');
+                    continue;
+                }
+
+                // Check for decrease indent keywords first
+                let decreased = false;
+                for (const keyword of decreaseIndentKeywords) {
+                    if (line.startsWith(keyword)) {
+                        indentLevel = Math.max(0, indentLevel - 1);
+                        decreased = true;
+                        break;
+                    }
+                }
+
+                formattedLines.push(' '.repeat(indentLevel * indentSize) + line);
+
+                // Check for increase indent keywords
+                for (const keyword of increaseIndentKeywords) {
+                    if (line.endsWith(keyword) || line.startsWith(keyword + ' ')) {
+                        indentLevel++;
+                        break;
+                    }
+                }
+            }
+            const fullRange = editor.getModel().getFullModelRange();
+            editor.executeEdits('format-shellscript', [{ range: fullRange, text: formattedLines.join('\n') }]);
+        }
+
+        function updateCounts() {
+            const content = editor.getValue();
+            const charCount = content.length;
+            const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
+            const position = editor.getPosition();
+
+            let statusText = `Ln ${position.lineNumber}, Col ${position.column} | Chars: ${charCount} | Words: ${wordCount}`;
+            statusBar.textContent = statusText;
+        }
+
+        function updateSelectionCounts() {
+            const content = editor.getValue();
+            let selectedText = editor.getModel().getValueInRange(editor.getSelection());
+            let occurrences = 0;
+            if (selectedText.length > 0) {
+                const regex = new RegExp(selectedText.replace(/[.*+?^${}()|[\\]/g, '\\$&'), 'g');
+                occurrences = (content.match(regex) || []).length;
+            }
+
+            let statusText = statusBar.textContent.split('|')[0];
+            if (selectedText.length > 0) {
+                statusText += ` | Selected: ${selectedText.length} | Occurrences: ${occurrences}`;
+            }
+            statusBar.textContent = statusText;
+        }
+
+        // --- Initial Load ---
+        initializeEditor();
+    </script>
+</body>
+</html>
