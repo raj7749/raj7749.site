@@ -671,9 +671,10 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
         const recentFilesDropdown = document.getElementById('recent-files-dropdown');
 
         const DB_NAME = 'LipiDB';
-        const DB_VERSION = 1;
-        const STORE_NAME = 'recentFiles';
-        const MAX_RECENT_FILES = 10; // User requested last 10
+        const DB_VERSION = 2; // Incremented DB version
+        const RECENT_FILES_STORE = 'recentFiles';
+        const FILE_HANDLES_STORE = 'savedFileHandles'; // New store
+        const MAX_RECENT_FILES = 10;
 
         let db;
 
@@ -683,8 +684,11 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
 
                 request.onupgradeneeded = (event) => {
                     db = event.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    if (!db.objectStoreNames.contains(RECENT_FILES_STORE)) {
+                        db.createObjectStore(RECENT_FILES_STORE, { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains(FILE_HANDLES_STORE)) {
+                        db.createObjectStore(FILE_HANDLES_STORE); // Key will be tab.id
                     }
                 };
 
@@ -705,8 +709,8 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
 
             try {
                 await openLipiDB(); // Ensure DB is open
-                const transaction = db.transaction(STORE_NAME, 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
+                const transaction = db.transaction(RECENT_FILES_STORE, 'readwrite');
+                const store = transaction.objectStore(RECENT_FILES_STORE);
 
                 // Get existing files within the same transaction
                 const existingFiles = await new Promise((resolve, reject) => {
@@ -768,8 +772,8 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
             return new Promise(async (resolve, reject) => {
                 try {
                     await openLipiDB(); // Ensure DB is open
-                    const transaction = db.transaction(STORE_NAME, 'readonly');
-                    const store = transaction.objectStore(STORE_NAME);
+                    const transaction = db.transaction(RECENT_FILES_STORE, 'readonly');
+                    const store = transaction.objectStore(RECENT_FILES_STORE);
                     const request = store.getAll();
 
                     request.onsuccess = (event) => {
@@ -791,7 +795,7 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
         function initializeEditor() {
             const editorContainer = document.getElementById('editor-container');
             require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs' }});
-            require(['vs/editor/editor.main'], () => {
+            require(['vs/editor/editor.main'], async () => { // Make callback async
                 // Define custom Ocean Blue theme
                 const savedFontSize = localStorage.getItem('editorFontSize');
                 const initialFontSize = savedFontSize ? parseInt(savedFontSize, 10) : 14;
@@ -837,11 +841,68 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
 
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 applyTheme(savedTheme);
-                newFile(); // Create first tab after editor is ready
+
+                if (loadTabsFromLocalStorage()) {
+                    // Tabs were loaded, now hydrate them with file handles and content
+                    try {
+                        const db = await openLipiDB();
+                        const transaction = db.transaction(FILE_HANDLES_STORE, 'readonly');
+                        const store = transaction.objectStore(FILE_HANDLES_STORE);
+
+                        const promises = tabs.map(tab => {
+                            if (tab.hasFileHandle) {
+                                return new Promise((resolve, reject) => {
+                                    const request = store.get(tab.id);
+                                    request.onsuccess = (event) => resolve({tab, handle: event.target.result});
+                                    request.onerror = (event) => reject(event.target.error);
+                                });
+                            }
+                            return Promise.resolve({tab, handle: null});
+                        });
+
+                        const results = await Promise.all(promises);
+
+                        for (const result of results) {
+                            const { tab, handle } = result;
+                            if (tab.hasFileHandle) {
+                                if (handle) {
+                                    tab.fileHandle = handle;
+                                    // If content was null (because it wasn't dirty), reload it
+                                    if (tab.content === null) {
+                                        const file = await handle.getFile();
+                                        tab.content = await file.text();
+                                    }
+                                } else {
+                                    // Handle case where handle is missing from DB
+                                    console.warn(`File handle for ${tab.name} not found in DB. It will be treated as an unsaved file.`);
+                                    tab.hasFileHandle = false;
+                                    tab.fileHandle = null;
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Error retrieving file handles from IndexedDB:", error);
+                        alert("There was an error restoring your saved files. They may open as unsaved.");
+                    }
+
+                    // Now that tabs are hydrated, set up the UI
+                    const activeTab = getActiveTab();
+                    if (activeTab) {
+                        editor.setValue(activeTab.content);
+                        monaco.editor.setModelLanguage(editor.getModel(), activeTab.language);
+                        editor.restoreViewState(activeTab.viewState);
+                        editor.focus();
+                        renderTabs();
+                        updateTitle();
+                    } else {
+                        newFile();
+                    }
+                } else {
+                    // No tabs were loaded, create a fresh one
+                    newFile();
+                }
+
                 setupEventListeners();
-                // Set initial state of toggle menu items after editor is ready
-                updateToggleMenuItem('toggle-minimap-btn', editor.getOption(monaco.editor.EditorOption.minimap).enabled, 'Toggle Minimap');
-                updateToggleMenuItem('toggle-wordwrap-btn', editor.getOption(monaco.editor.EditorOption.wordWrap) === 'on', 'Toggle Word Wrap');
                 // Set initial state of toggle menu items after editor is ready
                 updateToggleMenuItem('toggle-minimap-btn', editor.getOption(monaco.editor.EditorOption.minimap).enabled, 'Toggle Minimap');
                 updateToggleMenuItem('toggle-wordwrap-btn', editor.getOption(monaco.editor.EditorOption.wordWrap) === 'on', 'Toggle Word Wrap');
@@ -851,18 +912,20 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
         // --- Core Logic ---
         function getActiveTab() { return tabs.find(t => t.id === activeTabId); }
 
-        function switchTab(id) {
+                        function switchTab(id) {
             const currentTab = getActiveTab();
-            if (currentTab) {
+            if (currentTab && editor) {
                 currentTab.viewState = editor.saveViewState();
                 currentTab.content = editor.getValue();
             }
             activeTabId = id;
             const newTab = getActiveTab();
-            editor.setValue(newTab.content);
-            monaco.editor.setModelLanguage(editor.getModel(), newTab.language);
-            editor.restoreViewState(newTab.viewState);
-            editor.focus();
+            if (editor) {
+                editor.setValue(newTab.content);
+                monaco.editor.setModelLanguage(editor.getModel(), newTab.language);
+                editor.restoreViewState(newTab.viewState);
+                editor.focus();
+            }
             renderTabs();
             updateTitle();
         }
@@ -927,6 +990,7 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
                     tabElement.classList.add('dirty');
                 }
                 tabElement.dataset.tabId = tab.id;
+                tabElement.title = tab.name;
                 tabElement.innerHTML = `
                     <span class="tab-name">${tab.name}</span>
                     <span class="close-tab-btn">&times;</span>
@@ -952,6 +1016,15 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
                 if (!confirmClose) {
                     return; // User cancelled closing
                 }
+            }
+
+            // Remove the file handle from IndexedDB
+            if (closedTab.fileHandle) {
+                openLipiDB().then(db => {
+                    const transaction = db.transaction(FILE_HANDLES_STORE, 'readwrite');
+                    const store = transaction.objectStore(FILE_HANDLES_STORE);
+                    store.delete(closedTab.id);
+                });
             }
 
             tabs.splice(index, 1);
@@ -1031,9 +1104,39 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
                 const file = await fileHandle.getFile();
                 const content = await file.text();
                 const language = getLanguageFromFileName(file.name);
-                const newTab = { id: Date.now(), name: file.name, content, fileHandle: fileHandle, isDirty: false, language, viewState: null };
-                tabs.push(newTab);
-                switchTab(newTab.id);
+
+                // If there's only one tab, it's "Untitled", and it's clean, replace it.
+                if (tabs.length === 1 && tabs[0].name === 'Untitled' && !tabs[0].isDirty) {
+                    const tabToUpdate = tabs[0];
+
+                    // Set editor content BEFORE switching, so switchTab saves the correct content
+                    editor.setValue(content);
+
+                    tabToUpdate.name = file.name;
+                    tabToUpdate.fileHandle = fileHandle;
+                    tabToUpdate.language = language;
+                    tabToUpdate.isDirty = false;
+                    tabToUpdate.viewState = null;
+
+                    switchTab(tabToUpdate.id);
+
+                    // The content is already set in the editor, and switchTab has saved it.
+                    // We just need to update the language in the editor model.
+                    monaco.editor.setModelLanguage(editor.getModel(), language);
+
+                } else {
+                    const newTab = { id: Date.now(), name: file.name, content, fileHandle: fileHandle, isDirty: false, language, viewState: null };
+                    tabs.push(newTab);
+                    switchTab(newTab.id);
+                }
+
+                const activeTab = getActiveTab();
+                // Save the handle to IndexedDB for session restore
+                const db = await openLipiDB();
+                const transaction = db.transaction(FILE_HANDLES_STORE, 'readwrite');
+                const store = transaction.objectStore(FILE_HANDLES_STORE);
+                await store.put(fileHandle, activeTab.id);
+
                 await addFileToRecentDB(fileHandle); // Add to recent files DB
             } catch (err) {
                 console.error('Error opening file from handle:', err);
@@ -1090,6 +1193,13 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
                 tab.language = getLanguageFromFileName(handle.name);
                 monaco.editor.setModelLanguage(editor.getModel(), tab.language); // Update editor language
                 tab.isDirty = false;
+
+                // Save the new handle to IndexedDB for session restore
+                const db = await openLipiDB();
+                const transaction = db.transaction(FILE_HANDLES_STORE, 'readwrite');
+                const store = transaction.objectStore(FILE_HANDLES_STORE);
+                await store.put(handle, tab.id);
+
                 renderTabs();
                 updateTitle();
                 await addFileToRecentDB(handle); // Add to recent files DB
@@ -1548,6 +1658,50 @@ body[data-app-theme="dark"] .hamburger-menu .bar {
             }
             document.getElementById('status-text').textContent = statusText;
         }
+
+        function saveTabsToLocalStorage() {
+            const activeTab = getActiveTab();
+            if (activeTab && editor) {
+                activeTab.content = editor.getValue();
+            }
+
+            const tabsToSave = tabs.map(tab => {
+                // If tab has a handle and is not dirty, we don't need to save its content.
+                // We will re-read it from the file system on load.
+                // We only save content for tabs without a handle (like 'Untitled') or dirty tabs.
+                const contentToSave = !tab.fileHandle || tab.isDirty ? tab.content : null;
+
+                return {
+                    id: tab.id,
+                    name: tab.name,
+                    content: contentToSave,
+                    isDirty: tab.isDirty,
+                    language: tab.language,
+                    hasFileHandle: !!tab.fileHandle
+                };
+            });
+
+            localStorage.setItem('lipi_open_tabs', JSON.stringify(tabsToSave));
+            localStorage.setItem('lipi_active_tab', activeTabId);
+        }
+
+        function loadTabsFromLocalStorage() {
+            const savedTabs = localStorage.getItem('lipi_open_tabs');
+            const savedActiveTabId = localStorage.getItem('lipi_active_tab');
+
+            if (savedTabs) {
+                const loadedTabs = JSON.parse(savedTabs);
+                if (loadedTabs.length > 0) {
+                    tabs = loadedTabs;
+                    activeTabId = savedActiveTabId ? Number(savedActiveTabId) : tabs[0].id;
+                    // Don't call switchTab here. Just load the data.
+                    return true; // Tabs were loaded
+                }
+            }
+            return false; // No tabs were loaded
+        }
+
+        window.addEventListener('beforeunload', saveTabsToLocalStorage);
 
         // --- Initial Load ---
         initializeEditor();
