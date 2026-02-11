@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>EBCDIC File Viewer</title>
+  <link rel='stylesheet' href='index.css'>
+</head>
+
+<body>
+  <div class='container'>
+    <header>
+      <h1>EBCDIC File Viewer</h1>
+    </header>
+    <section class='controls'>
+      <div class='control-row'>
+        <label>EBCDIC File <input type='file' id='fileInput' accept='*/*'></label>
+        <label>Copybook <input type='file' id='copybookInput' accept='.cpy,.cbl,.txt,.cob'></label>
+      </div>
+      <div class='control-row'>
+        <label>Record Length <input type='number' id='recordLength' min='1' value='0'></label>
+        <label>Encoding
+          <select id='encodingSelect'>
+            <option value='cp037'>CP037</option>
+            <option value='cp500'>CP500</option>
+          </select>
+        </label>
+      </div>
+      <div class='control-row'>
+        <button id='toggleView'>Showing Text</button>
+      </div>
+    </section>
+    <section class='viewer'>
+      <div class='panel' id='hexPanel' style='display:none'>
+        <h2>Hex View</h2>
+        <pre id='hexOutput'></pre>
+      </div>
+      <div class='panel' id='textPanel'>
+        <h2>Text View</h2>
+        <pre id='textOutput'></pre>
+      </div>
+      <div class='panel' id='tablePanel' style='display:none'>
+        <h2>Table View <span id='copybookName' class='copybook-badge'></span></h2>
+        <div class='table-scroll'>
+          <table id='tableOutput'>
+            <thead id='tableHead'></thead>
+            <tbody id='tableBody'></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <section class='navigation'>
+      <button id='prevRecord'>Prev</button>
+      <span id='recordInfo'>Record 0 / 0</span>
+      <button id='nextRecord'>Next</button>
+    </section>
+  </div>
+  <script src='index.js'></script>
+</body>
+
+</html>
